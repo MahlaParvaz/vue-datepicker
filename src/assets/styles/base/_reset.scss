@@ -1,0 +1,29 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  list-style: none;
+}
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+body {
+  margin: 0;
+  background-color: #f7f8fa;
+}
+button {
+  border: 0;
+  outline: 0;
+  background: inherit;
+}
+.container {
+  max-width: 1140px;
+  margin: auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
