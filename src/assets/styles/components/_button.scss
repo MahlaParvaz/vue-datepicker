@@ -19,10 +19,20 @@
     background-color: $primary-600;
     color: $white-100;
   }
+  &--secondary {
+    border: 1px solid $gray-200;
+    height: 55px;
+    width: 90px;
+  }
+  &--outline {
+    border: none;
+    background-color: transparent;
+  }
 
   &--small {
     padding: 8px 14px;
     font-size: 12px;
+    font-weight: 400;
   }
 
   &--medium {

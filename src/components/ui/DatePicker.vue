@@ -2,7 +2,7 @@
   <main class="datepicker">
     <DatepickerHeader />
     <DatepickerContent />
-    <BaseButton variant="primary" type="submit" size="md" block> تایید </BaseButton>
+    <BaseButton variant="primary" type="submit" size="medium" block> تایید </BaseButton>
   </main>
 </template>
 
