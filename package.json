@@ -1,24 +1,50 @@
 {
-  "name": "date-picker",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@mahlaparvaz/vue-datepicker",
+  "version": "0.1.0",
+  "description": "A Persian datepicker component for Vue 3 with single date selection modes",
+  "author": "Your Name <mahla.zph@gmail.com>",
+  "license": "MIT",
   "type": "module",
+  "main": "./dist/vue-datepicker.umd.js",
+  "module": "./dist/vue-datepicker.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-datepicker.js",
+      "require": "./dist/vue-datepicker.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vue",
+    "vue3",
+    "datepicker",
+    "jalaali",
+    "persian",
+    "calendar",
+    "date",
+    "component"
+  ],
+  "repository": {
+    "type": "git"
+  },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:lib": "vite build --mode lib",
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
-  "dependencies": {
-    "axios": "^1.12.2",
-    "pinia": "^3.0.3",
-    "vue": "^3.5.18",
-    "vue-router": "^4.5.1"
+  "peerDependencies": {
+    "vue": "^3.5.0"
   },
+  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@vitejs/plugin-vue": "^6.0.1",

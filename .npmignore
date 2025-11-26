@@ -1,0 +1,14 @@
+node_modules/
+src/
+public/
+.vscode/
+.git/
+.gitignore
+*.log
+*.md
+!README.md
+vite.config.js
+eslint.config.js
+.prettierrc.json
+jsconfig.json
+index.html
