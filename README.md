@@ -25,7 +25,7 @@ npm install @mahlaparvaz/vue-datepicker
 <script setup>
   import { ref } from 'vue';
   import { DatepickerInput } from '@mahlaparvaz/vue-datepicker';
-  import '@mahlaparvaz/vue-datepicker/dist/style.css';
+  import '@mahlaparvaz/vue-datepicker/dist/vue-datepicker.css';
 
   const selectedDate = ref(null);
 </script>
@@ -197,7 +197,7 @@ npm install @mahlaparvaz/vue-datepicker
 <script setup>
   import { ref } from 'vue';
   import { DatepickerInput } from '@mahlaparvaz/vue-datepicker';
-  import '@mahlaparvaz/vue-datepicker/dist/style.css';
+  import '@mahlaparvaz/vue-datepicker/dist/vue-datepicker.css';
 
   const selectedDate = ref(null);
   const minDate = { jy: 1403, jm: 1, jd: 1 };

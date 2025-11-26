@@ -1,18 +1,19 @@
 {
   "name": "@mahlaparvaz/vue-datepicker",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "description": "A Persian datepicker component for Vue 3 with single date selection modes",
   "author": "Your Name <mahla.zph@gmail.com>",
   "license": "MIT",
   "type": "module",
   "main": "./dist/vue-datepicker.umd.js",
-  "module": "./dist/vue-datepicker.js",
+  "module": "./dist/vue-datepicker.es.js",
   "exports": {
     ".": {
-      "import": "./dist/vue-datepicker.js",
+      "import": "./dist/vue-datepicker.es.js",
       "require": "./dist/vue-datepicker.umd.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./dist/vue-datepicker.css": "./dist/vue-datepicker.css",
+    "./dist/style.css": "./dist/vue-datepicker.css"
   },
   "files": [
     "dist"
