@@ -1,3 +1,4 @@
+
 const NUMBER_DIGITS = Object.freeze({
   persian: ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
   arabic: ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
@@ -9,6 +10,7 @@ export function toLocalizedNumbers(value, system = 'latin') {
   if (value === null || value === undefined) return '';
 
   const digits = NUMBER_DIGITS[system] || NUMBER_DIGITS.latin;
+
   return String(value).replace(/\d/g, (digit) => {
     return digits[parseInt(digit, 10)];
   });
@@ -18,6 +20,7 @@ export function toLatinNumbers(value) {
   if (!value) return '';
 
   let result = String(value);
+
   Object.entries(NUMBER_DIGITS).forEach(([system, digits]) => {
     if (system === 'latin') return;
 
@@ -25,31 +28,15 @@ export function toLatinNumbers(value) {
       result = result.replace(new RegExp(digit, 'g'), String(index));
     });
   });
+
   return result;
+}
+
+export function toPersianNumbers(value) {
+  return toLocalizedNumbers(value, 'persian');
 }
 
 export function padNumber(num, length = 2, system = 'latin') {
   const padded = String(num).padStart(length, '0');
   return toLocalizedNumbers(padded, system);
-}
-
-export function formatNumber(num, system = 'latin', separator = ',') {
-  const formatted = String(num).replace(/\B(?=(\d{3})+(?!\d))/g, separator);
-  return toLocalizedNumbers(formatted, system);
-}
-
-export function isNumericString(value) {
-  const allDigits = Object.values(NUMBER_DIGITS).flat();
-
-  const pattern = new RegExp(`^[${allDigits.join('')}]+$`);
-  return pattern.test(value);
-}
-
-export function detectNumberSystem(digit) {
-  for (const [system, digits] of Object.entries(NUMBER_DIGITS)) {
-    if (digits.includes(digit)) {
-      return system;
-    }
-  }
-  return null;
 }

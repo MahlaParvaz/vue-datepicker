@@ -1,6 +1,7 @@
-import { localeManager } from "./localeManager";
+import { localeManager } from './localeManager.js';
 
 const faLocale = {
+  name: 'جلالی',
   months: [
     'فروردین',
     'اردیبهشت',
@@ -14,9 +15,11 @@ const faLocale = {
     'دی',
     'بهمن',
     'اسفند',
-  ],    
+  ],
   weekdays: ['شنبه', '۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه'],
+  weekdaysFull: ['شنبه', 'یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
   direction: 'rtl',
+  numberSystem: 'persian',
   todayText: 'امروز',
   selectDateText: 'تاریخ را انتخاب نمایید',
   selectTimeText: 'انتخاب زمان',
@@ -29,6 +32,7 @@ const faLocale = {
   selectedTimeText: 'زمان انتخاب شده',
   startDateText: 'تاریخ شروع',
   endDateText: 'تاریخ پایان',
+  calendarType: 'jalali',
 };
 
 localeManager.register('fa', faLocale);

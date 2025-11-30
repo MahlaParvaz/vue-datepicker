@@ -41,10 +41,10 @@
 <script setup>
   import { ref, computed, watch } from 'vue';
   import DatePicker from './DatePicker.vue';
-  import { toPersianNumbers } from '@/utils/toPersianNumbers';
   import CalendarIcon from '../icons/CalendarIcon.vue';
   import BaseInput from '../base/BaseInput.vue';
   import BaseButton from '../base/BaseButton.vue';
+import { toPersianNumbers } from '@/locales';
 
   const props = defineProps({
     modelValue: {

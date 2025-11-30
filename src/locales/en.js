@@ -1,37 +1,60 @@
 import { localeManager } from './localeManager.js';
 
-const enLocale = {
-  months: [
-    'Farvardin',
-    'Ordibehesht',
-    'Khordad',
-    'Tir',
-    'Mordad',
-    'Shahrivar',
-    'Mehr',
-    'Aban',
-    'Azar',
-    'Dey',
-    'Bahman',
-    'Esfand',
-  ],
-  weekdays: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-  weekdaysFull: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+const enGregorianLocale = {
+  name: 'میلادی',
+  englishName: 'English (Gregorian)',
+
+  calendarType: 'gregorian',
+
   direction: 'ltr',
-  todayText: 'Today',
-  selectDateText: 'Select a date',
-  selectTimeText: 'Select time',
+  numberSystem: 'latin',
+
+  months: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+
+  weekdays: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+
+  weekdaysFull: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+
+  ui: {
+    today: 'Today',
+    todayText: 'Today',
+    selectDate: 'Select date',
+    selectTime: 'Select time',
+    confirmText: 'Confirm',
+    cancelText: 'Cancel',
+    clearText: 'Clear',
+    hourText: 'Hour',
+    minuteText: 'Minute',
+    periodText: 'AM/PM',
+    selectedTimeText: 'Selected time',
+    startDate: 'Start date',
+    endDate: 'End date',
+    previousMonth: 'Previous month',
+    nextMonth: 'Next month',
+    previousYear: 'Previous year',
+    nextYear: 'Next year',
+    am: 'AM',
+    pm: 'PM',
+  },
+
   confirmText: 'Confirm',
-  cancelText: 'Cancel',
-  clearText: 'Clear',
-  hourText: 'Hour',
-  minuteText: 'Minute',
-  periodText: 'Period',
-  selectedTimeText: 'Selected time',
-  startDateText: 'Start date',
-  endDateText: 'End date',
+  todayText: 'Today',
 };
 
-localeManager.register('en', enLocale);
+localeManager.register('en-gregorian', enGregorianLocale);
+localeManager.register('en', enGregorianLocale);
 
-export default enLocale;
+export default enGregorianLocale;

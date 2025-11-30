@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, onUnmounted, ref, Transition } from 'vue';
+  import { computed, onMounted, onUnmounted, ref } from 'vue';
   import BaseButton from '../base/BaseButton.vue';
   import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
 
@@ -43,7 +43,7 @@
 
     availableLocales: {
       type: Array,
-      default: () => [{ code: 'fa', name: 'شمسی' }],
+      default: () => [],
     },
   });
 
@@ -51,10 +51,14 @@
 
   const isOpen = ref(false);
   const localeSelectorRef = ref(null);
-  const currentLocalName = computed(() => {
-    const locale = props.availableLocales.find((locale) => locale.code === props.modelValue);
 
-    return locale?.name || 'شمسی';
+  const currentLocalName = computed(() => {
+    if (props.availableLocales.length === 0) {
+      return 'شمسی';
+    }
+
+    const locale = props.availableLocales.find((locale) => locale.code === props.modelValue);
+    return locale?.name || props.modelValue;
   });
 
   function toggleDropdown() {

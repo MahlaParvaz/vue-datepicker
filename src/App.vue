@@ -3,27 +3,20 @@
   import DatepickerInput from './components/datepicker/DatepickerInput.vue';
 
   const selectedDateTime = ref(null);
-  const selectedRange = ref(null);
+  const selectedLocale = ref('fa');
 </script>
 
 <template>
   <div class="container">
-    <div>
+
+    <div class="demo-section">
       <DatepickerInput
         v-model="selectedDateTime"
+        v-model:locale="selectedLocale"
         mode="multiple"
         :enable-time="true"
         :time-format="24"
-        placeholder="انتخاب تاریخ و زمان"
-      />
-    </div>
-
-    <div>
-      <DatepickerInput
-        v-model="selectedRange"
-        mode="single"
-        :enable-time="true"
-        :time-format="'12'"
+        :enable-locale-selector="true"
         placeholder="انتخاب تاریخ و زمان"
       />
     </div>

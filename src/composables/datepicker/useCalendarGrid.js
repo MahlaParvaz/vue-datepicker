@@ -1,15 +1,17 @@
-import { computed, isRef } from 'vue';
+import { computed, isRef, unref, ref } from 'vue';
 import {
   jalaaliMonthLength,
   jalaaliToday,
   getJalaaliWeekday,
 } from '../../utils/datepicker/jalaali.js';
 import { isSameDate } from '../../utils/datepicker/dateComparison.js';
-import { toPersianNumbers } from '../../utils/datepicker/dateFormatter.js';
+import { toLocalizedNumbers } from '../../locales/numberFormatter.js';
+import { localeManager } from '../../locales/localeManager.js';
 import { CALENDAR_CONFIG } from '../../constants/datepicker.js';
 
 export function useCalendarGrid(options) {
-  const { year, month, selection, constraints, locale = 'fa' } = options;
+  const { year, month, selection, constraints } = options;
+  const locale = options.locale || ref('fa');
 
   if (!isRef(year) || !isRef(month)) {
     throw new Error('year and month must be Vue refs');
@@ -20,9 +22,8 @@ export function useCalendarGrid(options) {
   }
 
   const today = jalaaliToday();
-  const usePersianNumbers = locale === 'fa';
 
-  function createDayObject(day, monthOffset = 0) {
+  function createDayObject(day, monthOffset = 0, numberSystem = 'latin') {
     let targetMonth = month.value + monthOffset;
     let targetYear = year.value;
 
@@ -38,11 +39,13 @@ export function useCalendarGrid(options) {
 
     const key = monthOffset === 0 ? day : `${monthOffset > 0 ? 'next' : 'prev'}-${day}`;
 
+    const label = toLocalizedNumbers(day, numberSystem);
+
     return {
       key,
       day,
       date,
-      label: usePersianNumbers ? toPersianNumbers(day) : String(day),
+      label,
 
       isCurrentMonth: monthOffset === 0,
       isPrevMonth: monthOffset < 0,
@@ -58,7 +61,7 @@ export function useCalendarGrid(options) {
     };
   }
 
-  function getPrevMonthDays() {
+  function getPrevMonthDays(numberSystem) {
     const firstDayWeekday = getJalaaliWeekday(year.value, month.value, 1);
     if (firstDayWeekday === 0) return [];
 
@@ -68,33 +71,36 @@ export function useCalendarGrid(options) {
 
     const days = [];
     for (let i = firstDayWeekday - 1; i >= 0; i--) {
-      days.push(createDayObject(prevMonthLength - i, -1));
+      days.push(createDayObject(prevMonthLength - i, -1, numberSystem));
     }
 
     return days;
   }
 
-  function getCurrentMonthDays() {
+  function getCurrentMonthDays(numberSystem) {
     const daysInMonth = jalaaliMonthLength(year.value, month.value);
 
     return Array.from({ length: daysInMonth }, (_, i) => {
-      return createDayObject(i + 1, 0);
+      return createDayObject(i + 1, 0, numberSystem);
     });
   }
 
-  function getNextMonthDays(existingCount) {
+  function getNextMonthDays(existingCount, numberSystem) {
     const remaining = CALENDAR_CONFIG.TOTAL_CELLS - existingCount;
     if (remaining <= 0) return [];
 
     return Array.from({ length: remaining }, (_, i) => {
-      return createDayObject(i + 1, 1);
+      return createDayObject(i + 1, 1, numberSystem);
     });
   }
 
   const days = computed(() => {
-    const prevDays = getPrevMonthDays();
-    const currentDays = getCurrentMonthDays();
-    const nextDays = getNextMonthDays(prevDays.length + currentDays.length);
+    const currentLocale = unref(locale);
+    const numberSystem = localeManager.getNumberSystem(currentLocale);
+
+    const prevDays = getPrevMonthDays(numberSystem);
+    const currentDays = getCurrentMonthDays(numberSystem);
+    const nextDays = getNextMonthDays(prevDays.length + currentDays.length, numberSystem);
 
     return [...prevDays, ...currentDays, ...nextDays];
   });

@@ -1,7 +1,11 @@
 <template>
   <section class="datepicker-content">
     <div v-if="navigation.currentView.value !== 'years'" class="datepicker-content__controls">
-      <DatePickerLocaleSelector v-model="selectedLocale" :available-locales="availableLocales" />
+      <DatePickerLocaleSelector
+        v-if="enableLocaleSelector"
+        v-model="selectedLocale"
+        :available-locales="availableLocales"
+      />
 
       <BaseButton
         variant="outline"
@@ -26,14 +30,16 @@
         <template #icon-right>
           <ArrowDownIcon :width="24" :height="24" />
         </template>
-        {{ navigation.currentYear.value }}
+        {{ formatNumber(navigation.currentYear.value) }}
       </BaseButton>
     </div>
 
     <template v-if="navigation.currentView.value === 'years'">
       <div class="datepicker-content__years-controls">
         <ArrowRightIcon :width="24" :height="24" @click="prevYearRange" />
-        <p class="datepicker-content__years-controls-year">{{ navigation.currentYear.value }}</p>
+        <p class="datepicker-content__years-controls-year">
+          {{ formatNumber(navigation.currentYear.value) }}
+        </p>
         <ArrowLeftIcon :width="24" :height="24" @click="nextYearRange" />
       </div>
       <div class="datepicker-content__years">
@@ -47,7 +53,7 @@
           }"
           @click="selectYear(year)"
         >
-          {{ year }}
+          {{ formatNumber(year) }}
         </BaseButton>
       </div>
     </template>
@@ -91,9 +97,9 @@
           @click="selectDay(day)"
         >
           {{ day.label }}
-          <span v-if="day.isToday && !day.isSelected" class="datepicker-content__day-today-text"
-            >امروز</span
-          >
+          <span v-if="day.isToday && !day.isSelected" class="datepicker-content__day-today-text">
+            {{ locale.getText('todayText') }}
+          </span>
         </BaseButton>
       </div>
     </template>
@@ -116,7 +122,7 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import BaseButton from '../base/BaseButton.vue';
   import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
   import ArrowLeftIcon from '../icons/ArrowLeftIcon.vue';
@@ -127,9 +133,11 @@
   import { useTimeSelection } from '@/composables/datepicker/useTimeSelection.js';
   import { useDateConstraints } from '@/composables/datepicker/useDateConstraints.js';
   import { useCalendarGrid } from '@/composables/datepicker/useCalendarGrid.js';
-  import { localeManager } from '@/locales/localeManager.js';
+  import { useLocale } from '@/composables/datepicker/useLocale.js';
   import '@/locales/fa.js';
-  import { toPersianNumbers } from '@/utils/datepicker/dateFormatter.js';
+  import '@/locales/ar.js';
+  import '@/locales/en.js';
+  import '@/locales/zh.js';
   import { CALENDAR_CONFIG } from '@/constants/datepicker.js';
   import DatePickerLocaleSelector from './DatePickerLocaleSelector.vue';
 
@@ -141,6 +149,7 @@
     maxDate: { type: [Object, String], default: null },
     enableTime: { type: Boolean, default: false },
     timeFormat: { type: [String, Number], default: 24 },
+    enableLocaleSelector: { type: Boolean, default: true },
   });
 
   const emit = defineEmits([
@@ -148,7 +157,26 @@
     'update:currentView',
     'update:rangeSelection',
     'update:multipleSelection',
+    'update:locale',
   ]);
+
+  const locale = useLocale(props.locale);
+  const selectedLocale = ref(props.locale);
+
+  watch(selectedLocale, (newLocale) => {
+    locale.setLocale(newLocale);
+    emit('update:locale', newLocale);
+  });
+
+  watch(
+    () => props.locale,
+    (newLocale) => {
+      if (newLocale !== selectedLocale.value) {
+        selectedLocale.value = newLocale;
+        locale.setLocale(newLocale);
+      }
+    },
+  );
 
   const navigation = useNavigation(props.initialValue);
   const selection = createSelection(props.mode, props.initialValue);
@@ -162,17 +190,25 @@
     month: navigation.currentMonth,
     selection,
     constraints,
-    locale: props.locale,
+    locale: selectedLocale,
   });
 
-  const currentLocale = computed(() => localeManager.get(props.locale));
-  const WEEKDAYS = computed(() => currentLocale.value?.weekdays || []);
+  const availableLocales = computed(() => locale.availableLocales.value);
+  const WEEKDAYS = computed(() => locale.localeConfig.value?.weekdays || []);
   const MONTHS = computed(() =>
     Array.from({ length: CALENDAR_CONFIG.MONTHS_IN_YEAR }, (_, i) => i + 1),
   );
 
   function getMonthName(month) {
-    return localeManager.getMonthName(month, props.locale);
+    return locale.getMonthName(month);
+  }
+
+  function formatNumber(value) {
+    return locale.formatNumber(value);
+  }
+
+  function toPersianNumbers(value) {
+    return locale.formatNumber(value);
   }
 
   function toggleView(view) {

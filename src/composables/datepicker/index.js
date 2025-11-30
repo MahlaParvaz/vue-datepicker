@@ -3,6 +3,7 @@ export { createSelection, isValidSelectionMode } from './useSelection.js';
 export { useTimeSelection } from './useTimeSelection.js';
 export { useDateConstraints } from './useDateConstraints.js';
 export { useCalendarGrid } from './useCalendarGrid.js';
+export { useLocale } from './useLocale.js';
 export {
   createDatePickerContext,
   useDatePickerContext,
