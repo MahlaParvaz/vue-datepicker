@@ -1,6 +1,8 @@
 <template>
   <section class="datepicker-content">
     <div v-if="navigation.currentView.value !== 'years'" class="datepicker-content__controls">
+      <DatePickerLocaleSelector v-model="selectedLocale" :available-locales="availableLocales" />
+
       <BaseButton
         variant="outline"
         type="button"
@@ -129,6 +131,7 @@
   import '@/locales/fa.js';
   import { toPersianNumbers } from '@/utils/datepicker/dateFormatter.js';
   import { CALENDAR_CONFIG } from '@/constants/datepicker.js';
+  import DatePickerLocaleSelector from './DatePickerLocaleSelector.vue';
 
   const props = defineProps({
     locale: { type: String, default: 'fa' },
@@ -264,8 +267,7 @@
     margin-bottom: 20px;
 
     &__controls {
-      @include customFlex(row, space-between, center);
-      gap: 8px;
+      @include customFlex(row, space-between, center, 8px);
       &-btn {
         height: 24px;
         padding: 0;
