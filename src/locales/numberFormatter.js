@@ -1,4 +1,3 @@
-
 const NUMBER_DIGITS = Object.freeze({
   persian: ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
   arabic: ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
@@ -6,10 +5,10 @@ const NUMBER_DIGITS = Object.freeze({
   chinese: ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'],
 });
 
-export function toLocalizedNumbers(value, system = 'latin') {
+export function toLocalizedNumbers(value, system = 'persian') {
   if (value === null || value === undefined) return '';
 
-  const digits = NUMBER_DIGITS[system] || NUMBER_DIGITS.latin;
+  const digits = NUMBER_DIGITS[system] || NUMBER_DIGITS.persian;
 
   return String(value).replace(/\d/g, (digit) => {
     return digits[parseInt(digit, 10)];

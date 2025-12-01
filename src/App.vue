@@ -3,7 +3,7 @@
   import DatepickerInput from './components/datepicker/DatepickerInput.vue';
 
   const selectedDateTime = ref(null);
-  const selectedLocale = ref('fa');
+  const selectedLocale = ref('jalali');
 </script>
 
 <template>

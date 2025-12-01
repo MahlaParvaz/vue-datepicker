@@ -2,7 +2,7 @@ import { ref, computed } from 'vue';
 import { localeManager } from '@/locales/localeManager.js';
 import { toLocalizedNumbers } from '@/locales/numberFormatter.js';
 
-export function useLocale(initialLocale = 'fa') {
+export function useDatePickerLocale(initialLocale = 'jalali  ') {
   const currentLocale = ref(initialLocale);
   const localeConfig = computed(() => localeManager.get(currentLocale.value));
 

@@ -133,11 +133,8 @@
   import { useTimeSelection } from '@/composables/datepicker/useTimeSelection.js';
   import { useDateConstraints } from '@/composables/datepicker/useDateConstraints.js';
   import { useCalendarGrid } from '@/composables/datepicker/useCalendarGrid.js';
-  import { useLocale } from '@/composables/datepicker/useLocale.js';
-  import '@/locales/fa.js';
-  import '@/locales/ar.js';
-  import '@/locales/en.js';
-  import '@/locales/zh.js';
+  import { useDatePickerLocale } from '@/composables/datepicker/useDatePickerLocale.js';
+
   import { CALENDAR_CONFIG } from '@/constants/datepicker.js';
   import DatePickerLocaleSelector from './DatePickerLocaleSelector.vue';
 
@@ -160,7 +157,7 @@
     'update:locale',
   ]);
 
-  const locale = useLocale(props.locale);
+  const locale = useDatePickerLocale(props.locale);
   const selectedLocale = ref(props.locale);
 
   watch(selectedLocale, (newLocale) => {

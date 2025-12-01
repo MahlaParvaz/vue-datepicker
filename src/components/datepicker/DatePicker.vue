@@ -27,7 +27,7 @@
   import DatepickerContent from '../datepicker/DatepickerContent.vue';
   import DatepickerHeader from '../datepicker/DatepickerHeader.vue';
   import BaseButton from '../base/BaseButton.vue';
-  import { useLocale } from '@/composables/datepicker/useLocale.js';
+  import { useDatePickerLocale } from '@/composables/datepicker/useDatePickerLocale.js';
 
   const props = defineProps({
     modelValue: {
@@ -68,7 +68,7 @@
 
   const contentRef = ref(null);
   const currentLocale = ref(props.locale);
-  const localeHelper = useLocale(currentLocale.value);
+  const localeHelper = useDatePickerLocale(currentLocale.value);
 
   watch(() => props.locale, (newLocale) => {
     if (newLocale !== currentLocale.value) {

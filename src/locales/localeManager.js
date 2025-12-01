@@ -1,6 +1,13 @@
+import { LOCALE_DEFINITIONS } from './locales';
+
 export function createLocaleManager(initialLocales = {}) {
   const locales = new Map(Object.entries(initialLocales));
-  let defaultLocaleCode = 'fa';
+
+  Object.entries(LOCALE_DEFINITIONS).forEach(([code, config]) => {
+    locales.set(code, Object.freeze({ ...config }));
+  });
+
+  let defaultLocaleCode = 'jalali';
 
   function validateConfig(config) {
     const requiredFields = ['months', 'weekdays', 'direction'];
@@ -22,12 +29,18 @@ export function createLocaleManager(initialLocales = {}) {
       throw new Error('direction must be "rtl" or "ltr"');
     }
 
-    if (config.numberSystem && !['persian', 'arabic', 'latin', 'chinese'].includes(config.numberSystem)) {
+    if (
+      config.numberSystem &&
+      !['persian', 'arabic', 'latin', 'chinese'].includes(config.numberSystem)
+    ) {
       throw new Error('numberSystem must be one of: persian, arabic, latin, chinese');
     }
 
-    if (config.calendarType && !['jalali', 'gregorian', 'hijri'].includes(config.calendarType)) {
-      throw new Error('calendarType must be one of: jalali, gregorian, hijri');
+    if (
+      config.calendarType &&
+      !['jalali', 'gregorian', 'hijri', 'chinese'].includes(config.calendarType)
+    ) {
+      throw new Error('calendarType must be one of: jalali, gregorian, hijri, chinese');
     }
   }
 
@@ -73,21 +86,27 @@ export function createLocaleManager(initialLocales = {}) {
 
     getMonthName(month, code) {
       const locale = this.get(code || defaultLocaleCode);
-      return locale?.months[month - 1] || '';
+      return locale?.months?.[month - 1] || '';
     },
 
     getWeekdayName(weekday, code) {
       const locale = this.get(code || defaultLocaleCode);
-      return locale?.weekdays[weekday] || '';
+      return locale?.weekdays?.[weekday] || locale?.weekDays?.[weekday] || '';
     },
 
     getWeekdayFullName(weekday, code) {
       const locale = this.get(code || defaultLocaleCode);
-      return locale?.weekdaysFull?.[weekday] || locale?.weekdays?.[weekday] || '';
+      return (
+        locale?.weekdaysFull?.[weekday] ||
+        locale?.weekdays?.[weekday] ||
+        locale?.weekDays?.[weekday] ||
+        ''
+      );
     },
 
     getText(key, code) {
       const locale = this.get(code || defaultLocaleCode);
+      if (locale?.ui && key in locale.ui) return locale.ui[key];
       return locale?.[key] || '';
     },
 
@@ -109,3 +128,4 @@ export function createLocaleManager(initialLocales = {}) {
 }
 
 export const localeManager = createLocaleManager();
+localeManager.setDefault('jalali');

@@ -12,7 +12,7 @@ const DatePickerContextKey = Symbol('DatePickerContext');
 export function createDatePickerContext(options = {}) {
   const {
     mode = SELECTION_MODES.SINGLE,
-    locale = 'fa',
+    locale = 'jalali',
     initialValue = null,
     minDate = null,
     maxDate = null,
@@ -110,13 +110,6 @@ export function createDatePickerContext(options = {}) {
 
 export function useDatePickerContext() {
   const context = inject(DatePickerContextKey);
-
-  if (!context) {
-    throw new Error(
-      'useDatePickerContext must be used within a DatePicker component. ' +
-        'Make sure the parent component has called createDatePickerContext.',
-    );
-  }
 
   return context;
 }
