@@ -1,12 +1,12 @@
 <template>
   <div class="time-picker">
     <div class="time-picker__header">
-      <span class="time-picker__title">انتخاب زمان</span>
+      <span class="time-picker__title">{{ i18nStore.getText('selectTimeText') }}</span>
     </div>
 
     <div class="time-picker__content">
       <div class="time-picker__column">
-        <div class="time-picker__label">دقیقه</div>
+        <div class="time-picker__label">{{ i18nStore.getText('minuteText') }}</div>
         <div class="time-picker__scroll-container">
           <div
             v-for="minute in minutes"
@@ -23,7 +23,7 @@
       </div>
 
       <div class="time-picker__column">
-        <div class="time-picker__label">ساعت</div>
+        <div class="time-picker__label">{{ i18nStore.getText('hourText') }}</div>
         <div class="time-picker__scroll-container">
           <div
             v-for="hour in hours"
@@ -37,7 +37,7 @@
       </div>
 
       <div v-if="timeFormat === '12'" class="time-picker__column time-picker__column--period">
-        <div class="time-picker__label">دوره</div>
+        <div class="time-picker__label">{{ i18nStore.getText('periodText') }}</div>
         <div class="time-picker__scroll-container">
           <div
             :class="[
@@ -63,7 +63,7 @@
 
     <div class="time-picker__display">
       <span class="time-picker__display-text">
-        زمان انتخاب شده:
+        {{ i18nStore.getText('selectedTimeText') }}:
         <strong>
           {{ displayTime }}
         </strong>
@@ -74,6 +74,9 @@
 
 <script setup>
   import { computed } from 'vue';
+  import { useI18nStore } from '@/store/i18n';
+
+  const i18nStore = useI18nStore();
 
   const props = defineProps({
     selectedHour: {
