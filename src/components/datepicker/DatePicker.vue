@@ -12,8 +12,6 @@
       @update:locale="handleLocaleUpdate"
       @select-month="selectMonth"
       @select-year="selectYear"
-      @next-year-range="nextYearRange"
-      @prev-year-range="prevYearRange"
     />
     <DatepickerContent
       :locale="currentLocale"
@@ -44,7 +42,6 @@
   import BaseButton from '../base/BaseButton.vue';
   import { useI18nStore } from '@/store/i18n';
   import { useNavigation } from '@/composables/datepicker/useNavigation.js';
-  import { CALENDAR_CONFIG } from '@/constants/datepicker';
 
   const props = defineProps({
     modelValue: {
@@ -160,18 +157,6 @@
 
   function selectYear(year) {
     navigation.setYear(year);
-  }
-
-  function nextYearRange() {
-    for (let i = 0; i < CALENDAR_CONFIG.YEARS_TO_SHOW; i++) {
-      navigation.nextYear();
-    }
-  }
-
-  function prevYearRange() {
-    for (let i = 0; i < CALENDAR_CONFIG.YEARS_TO_SHOW; i++) {
-      navigation.prevYear();
-    }
   }
 
   onMounted(() => {

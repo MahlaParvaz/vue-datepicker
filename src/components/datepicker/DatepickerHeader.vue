@@ -83,7 +83,7 @@
       {{ getMonthName(month) }}
     </BaseButton>
   </div>
-</template>
+</template> 
 
 <script setup>
   import { computed } from 'vue';
@@ -130,8 +130,6 @@
     'update:locale',
     'select-month',
     'select-year',
-    'next-year-range',
-    'prev-year-range',
   ]);
 
   const i18nStore = useI18nStore();
@@ -180,11 +178,15 @@
   }
 
   function nextYearRange() {
-    emit('next-year-range');
+    for (let i = 0; i < CALENDAR_CONFIG.YEARS_TO_SHOW; i++) {
+      props.navigation.nextYear();
+    }
   }
 
   function prevYearRange() {
-    emit('prev-year-range');
+    for (let i = 0; i < CALENDAR_CONFIG.YEARS_TO_SHOW; i++) {
+      props.navigation.prevYear();
+    }
   }
 </script>
 
