@@ -1,5 +1,5 @@
 <template>
-  <section class="datepicker__header">
+  <section class="datepicker__header" :style="{ fontFamily: fontFamily }">
     <CloseButtonIcon
       :width="24"
       :height="24"
@@ -221,6 +221,7 @@
       @include customFlex(row, space-between, center);
       height: 24px;
       cursor: pointer;
+      margin-bottom: 20px;
       &-year {
         font-weight: 400;
         font-size: 12px;
