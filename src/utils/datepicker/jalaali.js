@@ -1,11 +1,40 @@
+/**
+ * Integer division helper function
+ * @private
+ * @param {number} a - Dividend
+ * @param {number} b - Divisor
+ * @returns {number} The floor of a/b
+ */
 function div(a, b) {
   return Math.floor(a / b);
 }
 
+/**
+ * Modulo helper function
+ * @private
+ * @param {number} a - Number
+ * @param {number} b - Modulo
+ * @returns {number} The remainder of a/b
+ */
 function mod(a, b) {
   return a - Math.floor(a / b) * b;
 }
 
+/**
+ * Converts a Gregorian date to Jalali (Persian) calendar
+ * @param {number|Date} gy - Gregorian year or Date object
+ * @param {number} [gm] - Gregorian month (1-12)
+ * @param {number} [gd] - Gregorian day (1-31)
+ * @returns {{jy: number, jm: number, jd: number}} Jalali date object
+ * @example
+ * // Convert specific date
+ * const jalali = toJalaali(2024, 12, 7);
+ * // Returns: { jy: 1403, jm: 9, jd: 17 }
+ *
+ * @example
+ * // Convert Date object
+ * const jalali = toJalaali(new Date());
+ */
 export function toJalaali(gy, gm, gd) {
   if (gy instanceof Date) {
     gd = gy.getDate();
@@ -72,6 +101,16 @@ export function toJalaali(gy, gm, gd) {
   return { jy, jm, jd };
 }
 
+/**
+ * Converts a Jalali (Persian) date to Gregorian calendar
+ * @param {number} jy - Jalali year
+ * @param {number} jm - Jalali month (1-12)
+ * @param {number} jd - Jalali day (1-31)
+ * @returns {{gy: number, gm: number, gd: number}} Gregorian date object
+ * @example
+ * const gregorian = toGregorian(1403, 9, 17);
+ * // Returns: { gy: 2024, gm: 12, gd: 7 }
+ */
 export function toGregorian(jy, jm, jd) {
   jy = parseInt(jy);
   jm = parseInt(jm);
@@ -134,6 +173,13 @@ export function toGregorian(jy, jm, jd) {
   return { gy, gm, gd: gd_temp };
 }
 
+/**
+ * Determines if a Jalali year is a leap year
+ * @param {number} jy - Jalali year
+ * @returns {boolean} True if the year is a leap year, false otherwise
+ * @example
+ * isLeapJalaaliYear(1403); // Returns: true or false
+ */
 export function isLeapJalaaliYear(jy) {
   const breaks = [
     -61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394,
@@ -165,6 +211,16 @@ export function isLeapJalaaliYear(jy) {
   return leap === 0;
 }
 
+/**
+ * Returns the number of days in a Jalali month
+ * @param {number} jy - Jalali year
+ * @param {number} jm - Jalali month (1-12)
+ * @returns {number} Number of days in the month (29, 30, or 31)
+ * @example
+ * jalaaliMonthLength(1403, 1); // Returns: 31 (first 6 months have 31 days)
+ * jalaaliMonthLength(1403, 7); // Returns: 30 (months 7-11 have 30 days)
+ * jalaaliMonthLength(1403, 12); // Returns: 29 or 30 (depends on leap year)
+ */
 export function jalaaliMonthLength(jy, jm) {
   if (jm <= 6) return 31;
   if (jm <= 11) return 30;
@@ -172,19 +228,41 @@ export function jalaaliMonthLength(jy, jm) {
   return 29;
 }
 
+/**
+ * Returns today's date in Jalali calendar
+ * @returns {{jy: number, jm: number, jd: number}} Today's Jalali date
+ * @example
+ * const today = jalaaliToday();
+ * // Returns: { jy: 1403, jm: 9, jd: 17 }
+ */
 export function jalaaliToday() {
   const today = new Date();
   return toJalaali(today);
 }
 
-
-
+/**
+ * Gets the weekday for a Jalali date (0 = Saturday, 6 = Friday in Persian week)
+ * @param {number} jy - Jalali year
+ * @param {number} jm - Jalali month (1-12)
+ * @param {number} jd - Jalali day (1-31)
+ * @returns {number} Weekday number (0-6, where 0 is Saturday)
+ * @example
+ * getJalaaliWeekday(1403, 9, 17); // Returns: 5 (Friday)
+ */
 export function getJalaaliWeekday(jy, jm, jd) {
   const g = toGregorian(jy, jm, jd);
   const date = new Date(g.gy, g.gm - 1, g.gd);
   return (date.getDay() + 1) % 7;
 }
 
+/**
+ * Converts a Unix timestamp to Jalali date with time
+ * @param {number} timestamp - Unix timestamp in milliseconds
+ * @returns {{jy: number, jm: number, jd: number, hour: number, minute: number}} Jalali date with time
+ * @example
+ * const jalaliDate = timestampToJalaali(1733587200000);
+ * // Returns: { jy: 1403, jm: 9, jd: 17, hour: 12, minute: 30 }
+ */
 export function timestampToJalaali(timestamp) {
   const date = new Date(timestamp);
   const jDate = toJalaali(date);
@@ -195,6 +273,14 @@ export function timestampToJalaali(timestamp) {
   };
 }
 
+/**
+ * Converts a Jalali date (with optional time) to Unix timestamp
+ * @param {{jy: number, jm: number, jd: number, hour?: number, minute?: number, second?: number}} jDate - Jalali date object
+ * @returns {number|null} Unix timestamp in milliseconds, or null if invalid
+ * @example
+ * const timestamp = jalaaliToTimestamp({ jy: 1403, jm: 9, jd: 17, hour: 12, minute: 30 });
+ * // Returns: 1733587200000
+ */
 export function jalaaliToTimestamp(jDate) {
   if (!jDate) return null;
 
@@ -205,6 +291,14 @@ export function jalaaliToTimestamp(jDate) {
   return date.getTime();
 }
 
+/**
+ * Converts a Jalali date to a JavaScript Date object
+ * @param {{jy: number, jm: number, jd: number, hour?: number, minute?: number, second?: number}} jDate - Jalali date object
+ * @returns {Date|null} JavaScript Date object, or null if invalid
+ * @example
+ * const date = jalaaliToDate({ jy: 1403, jm: 9, jd: 17 });
+ * // Returns: Date object for 2024-12-07
+ */
 export function jalaaliToDate(jDate) {
   if (!jDate) return null;
 
@@ -214,6 +308,14 @@ export function jalaaliToDate(jDate) {
   return new Date(gregorian.gy, gregorian.gm - 1, gregorian.gd, hour, minute, second);
 }
 
+/**
+ * Converts a Jalali date to ISO 8601 string format
+ * @param {{jy: number, jm: number, jd: number, hour?: number, minute?: number, second?: number}} jDate - Jalali date object
+ * @returns {string|null} ISO 8601 date string, or null if invalid
+ * @example
+ * const isoString = jalaaliToISOString({ jy: 1403, jm: 9, jd: 17 });
+ * // Returns: "2024-12-07T00:00:00.000Z"
+ */
 export function jalaaliToISOString(jDate) {
   const date = jalaaliToDate(jDate);
   return date ? date.toISOString() : null;
