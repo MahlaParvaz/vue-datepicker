@@ -99,7 +99,8 @@ export function useCalendarGrid(options) {
     const prevDays = getPrevMonthDays();
     const currentDays = getCurrentMonthDays();
     const nextDays = getNextMonthDays(prevDays.length + currentDays.length);
-    return [...prevDays, ...currentDays, ...nextDays];
+    const allDays = [...prevDays, ...currentDays, ...nextDays];
+    return allDays.slice(0, CALENDAR_CONFIG.TOTAL_CELLS);
   });
 
   const weeksCount = computed(() => Math.ceil(days.value.length / CALENDAR_CONFIG.DAYS_IN_WEEK));
