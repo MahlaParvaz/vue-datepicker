@@ -1,11 +1,13 @@
 import { JalaaliAdapter } from './jalaali.adapter.js';
 import { GregorianAdapter } from './gregorian.adapter.js';
 import { HijriAdapter } from './hijri.adapter.js';
+import { ChineseAdapter } from './chinese.adapter.js';
 
 const adapters = {
   jalali: JalaaliAdapter,
   gregorian: GregorianAdapter,
   hijri: HijriAdapter,
+  chinese: ChineseAdapter,
 };
 
 export function getCalendarAdapter(localeCode) {

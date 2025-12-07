@@ -1,25 +1,36 @@
 import { ref, computed, watch } from 'vue';
 import { parseJalaaliDate } from '../../utils/datepicker/dateParser.js';
-import { VIEW_MODES, CALENDAR_CONFIG } from '../../constants/datepicker.js';
+import { VIEW_MODES } from '../../constants/datepicker.js';
 import { useI18nStore } from '@/store/i18n.js';
 import { getCalendarAdapter } from '@/locales/adapters/createCalendarAdapterManager.js';
 
 export function useNavigation(initialDate = null, options = {}) {
   const i18nStore = useI18nStore();
-  const { minYear = null, maxYear = null } = options;
+  const { yearsBefore = 50, yearsAfter = 50 } = options;
 
   const adapter = computed(() => getCalendarAdapter(i18nStore.calendarType));
+  const activeMinYear = computed(() => {
+    const today = adapter.value.getToday();
+    const currentYear = today.jy || today.year;
+    return currentYear - yearsBefore;
+  });
+
+  const activeMaxYear = computed(() => {
+    const today = adapter.value.getToday();
+    const currentYear = today.jy || today.year;
+    return currentYear + yearsAfter;
+  });
 
   const parsed = parseJalaaliDate(initialDate);
   const today = adapter.value.getToday();
 
   let initialYear = parsed?.jy || parsed?.year || today.jy || today.year;
 
-  if (minYear !== null && initialYear < minYear) {
-    initialYear = minYear;
+  if (initialYear < activeMinYear.value) {
+    initialYear = activeMinYear.value;
   }
-  if (maxYear !== null && initialYear > maxYear) {
-    initialYear = maxYear;
+  if (initialYear > activeMaxYear.value) {
+    initialYear = activeMaxYear.value;
   }
 
   const currentYear = ref(initialYear);
@@ -30,38 +41,25 @@ export function useNavigation(initialDate = null, options = {}) {
     () => i18nStore.calendarType,
     () => {
       const newToday = adapter.value.getToday();
-      currentYear.value = newToday.jy || newToday.year;
+      let newYear = newToday.jy || newToday.year;
+      if (newYear < activeMinYear.value) {
+        newYear = activeMinYear.value;
+      }
+      if (newYear > activeMaxYear.value) {
+        newYear = activeMaxYear.value;
+      }
+
+      currentYear.value = newYear;
       currentMonth.value = newToday.jm || newToday.month;
     },
   );
 
   const yearRange = computed(() => {
     const years = [];
+    const currentMinYear = activeMinYear.value;
+    const currentMaxYear = activeMaxYear.value;
 
-    if (minYear !== null && maxYear !== null) {
-      for (let year = minYear; year <= maxYear; year++) {
-        years.push(year);
-      }
-      return years;
-    }
-
-    const offset = CALENDAR_CONFIG.YEAR_RANGE_OFFSET;
-    const count = CALENDAR_CONFIG.YEARS_TO_SHOW;
-
-    let startYear = currentYear.value - offset;
-    let endYear = startYear + count - 1;
-
-    if (minYear !== null && startYear < minYear) {
-      startYear = minYear;
-      endYear = Math.min(startYear + count - 1, maxYear ?? Infinity);
-    }
-
-    if (maxYear !== null && endYear > maxYear) {
-      endYear = maxYear;
-      startYear = Math.max(endYear - count + 1, minYear ?? -Infinity);
-    }
-
-    for (let year = startYear; year <= endYear; year++) {
+    for (let year = currentMinYear; year <= currentMaxYear; year++) {
       years.push(year);
     }
 
@@ -92,14 +90,14 @@ export function useNavigation(initialDate = null, options = {}) {
 
   function nextYear() {
     const nextYearValue = currentYear.value + 1;
-    if (maxYear === null || nextYearValue <= maxYear) {
+    if (nextYearValue <= activeMaxYear.value) {
       currentYear.value = nextYearValue;
     }
   }
 
   function prevYear() {
     const prevYearValue = currentYear.value - 1;
-    if (minYear === null || prevYearValue >= minYear) {
+    if (prevYearValue >= activeMinYear.value) {
       currentYear.value = prevYearValue;
     }
   }
@@ -112,9 +110,7 @@ export function useNavigation(initialDate = null, options = {}) {
   }
 
   function setYear(year) {
-    // Apply year constraints
-    if (minYear !== null && year < minYear) return;
-    if (maxYear !== null && year > maxYear) return;
+    if (year < activeMinYear.value || year > activeMaxYear.value) return;
 
     currentYear.value = year;
     currentView.value = VIEW_MODES.DAYS;

@@ -30,8 +30,8 @@
         :time-format="24"
         :enable-locale-selector="true"
         placeholder="انتخاب تاریخ و زمان"
-        :min-year="1347"
-        :max-year="1500"
+        :years-before="25"
+        :years-after="25"
       />
     </div>
   </div>

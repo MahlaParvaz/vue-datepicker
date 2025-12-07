@@ -24,11 +24,11 @@
       :enable-locale-selector="props.enableLocaleSelector"
       :current-view="navigation.currentView.value"
       :navigation="navigation"
-      @update:selected-date="onDateSelect"
-      @update:range-selection="onRangeSelect"
-      @update:multiple-selection="onMultipleSelect"
-      @update:locale="onLocaleChange"
-      ref="contentRef"
+      @update:selected-date="dateSelect"
+      @update:range-selection="rangeSelect"
+      @update:multiple-selection="multipleSelect"
+      @update:locale="localeChange"
+      ref="datepickerContentRef"
     />
     <BaseButton variant="primary" type="submit" size="medium" block @click="handleConfirm">
       {{ confirmButtonText }}
@@ -65,13 +65,13 @@
       type: [Object, String],
       default: null,
     },
-    minYear: {
+    yearsBefore: {
       type: Number,
-      default: null,
+      default: 50,
     },
-    maxYear: {
+    yearsAfter: {
       type: Number,
-      default: null,
+      default: 50,
     },
     enableTime: {
       type: Boolean,
@@ -98,11 +98,11 @@
 
   const i18nStore = useI18nStore();
   const selectedLocale = ref(props.locale || i18nStore.currentLocale);
-  const contentRef = ref(null);
+  const datepickerContentRef = ref(null);
   const currentLocale = ref(props.locale || i18nStore.currentLocale);
   const navigation = useNavigation(props.modelValue, {
-    minYear: props.minYear,
-    maxYear: props.maxYear,
+    yearsBefore: props.yearsBefore,
+    yearsAfter: props.yearsAfter,
   });
 
   watch(
@@ -121,26 +121,26 @@
 
   const confirmButtonText = computed(() => i18nStore.getText('confirmText'));
 
-  function onLocaleChange(newLocale) {
+  function localeChange(newLocale) {
     currentLocale.value = newLocale;
     emit('update:locale', newLocale);
   }
 
-  function onDateSelect(date) {
+  function dateSelect(date) {
     emit('change', date);
   }
 
-  function onRangeSelect(range) {
+  function rangeSelect(range) {
     emit('change', range);
   }
 
-  function onMultipleSelect(dates) {
+  function multipleSelect(dates) {
     emit('change', dates);
   }
 
   function handleConfirm() {
-    if (contentRef.value) {
-      const confirmedDate = contentRef.value.confirmSelection();
+    if (datepickerContentRef.value) {
+      const confirmedDate = datepickerContentRef.value.confirmSelection();
       if (confirmedDate) {
         emit('update:modelValue', confirmedDate);
         emit('confirm', confirmedDate);

@@ -26,8 +26,8 @@
             :mode="mode"
             :min-date="minDate"
             :max-date="maxDate"
-            :min-year="minYear"
-            :max-year="maxYear"
+            :years-before="yearsBefore"
+            :years-after="yearsAfter"
             :locale="currentLocale"
             :enable-time="enableTime"
             :time-format="timeFormat"
@@ -82,13 +82,13 @@
       type: [Date, String],
       default: null,
     },
-    minYear: {
+    yearsBefore: {
       type: Number,
-      default: null,
+      default: 50,
     },
-    maxYear: {
+    yearsAfter: {
       type: Number,
-      default: null,
+      default: 50,
     },
     enableTime: {
       type: Boolean,

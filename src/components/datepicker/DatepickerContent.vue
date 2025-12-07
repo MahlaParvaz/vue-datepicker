@@ -138,39 +138,29 @@
     ];
   }
 
-  function formatNumber(value) {
-    return toLocalizedNumbers(value, i18nStore.numberSystem);
-  }
-
-  function toPersianNumbers(value) {
-    return toLocalizedNumbers(value, i18nStore.numberSystem);
-  }
+  const formatNumber = (value) => toLocalizedNumbers(value, i18nStore.numberSystem);
+  const toPersianNumbers = (value) => toLocalizedNumbers(value, i18nStore.numberSystem);
 
   function selectDay(dayObj) {
     if (dayObj.isDisabled) return;
 
     selection.select(dayObj.date);
 
-    if (props.mode === 'range') {
-      emit('update:rangeSelection', selection.getValue());
-    } else if (props.mode === 'multiple') {
-      emit('update:multipleSelection', selection.getValue());
-    } else {
-      emit('update:selectedDate', selection.getValue());
+    switch (props.mode) {
+      case 'range':
+        emit('update:rangeSelection', selection.getValue());
+        break;
+      case 'multiple':
+        emit('update:multipleSelection', selection.getValue());
+        break;
+
+      default:
+        emit('update:selectedDate', selection.getValue());
     }
   }
-
-  function selectHour(hour) {
-    if (time) time.selectHour(hour);
-  }
-
-  function selectMinute(minute) {
-    if (time) time.selectMinute(minute);
-  }
-
-  function togglePeriod() {
-    if (time) time.togglePeriod();
-  }
+  const selectHour = (hour) => time?.selectHour(hour);
+  const selectMinute = (minute) => time?.selectMinute(minute);
+  const togglePeriod = () => time?.togglePeriod();
 
   function getWeekStyle(week) {
     const hasRange = week.some((day) => day.isInRange || day.isRangeStart || day.isRangeEnd);
@@ -280,7 +270,6 @@
       font-size: 14px;
       justify-content: space-between;
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
       position: relative;
 
       &::before {
@@ -300,7 +289,7 @@
       border-radius: 10px;
       font-size: 14px;
       font-weight: 400;
-      width: 100%;
+      width: 32px;
       height: 32px;
       cursor: pointer;
       @include flex(column, start, center);

@@ -1,13 +1,29 @@
 export function compareDates(a, b) {
   if (!a || !b) return 0;
-  if (a.jy !== b.jy) return a.jy - b.jy;
-  if (a.jm !== b.jm) return a.jm - b.jm;
-  return a.jd - b.jd;
+
+  const yearA = a.jy || a.year;
+  const yearB = b.jy || b.year;
+  const monthA = a.jm || a.month;
+  const monthB = b.jm || b.month;
+  const dayA = a.jd || a.day;
+  const dayB = b.jd || b.day;
+
+  if (yearA !== yearB) return yearA - yearB;
+  if (monthA !== monthB) return monthA - monthB;
+  return dayA - dayB;
 }
 
 export function isSameDate(a, b) {
   if (!a || !b) return false;
-  return a.jy === b.jy && a.jm === b.jm && a.jd === b.jd;
+
+  const yearA = a.jy || a.year;
+  const yearB = b.jy || b.year;
+  const monthA = a.jm || a.month;
+  const monthB = b.jm || b.month;
+  const dayA = a.jd || a.day;
+  const dayB = b.jd || b.day;
+
+  return yearA === yearB && monthA === monthB && dayA === dayB;
 }
 
 export function isBefore(a, b) {
