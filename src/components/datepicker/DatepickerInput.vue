@@ -26,6 +26,8 @@
             :mode="mode"
             :min-date="minDate"
             :max-date="maxDate"
+            :min-year="minYear"
+            :max-year="maxYear"
             :locale="currentLocale"
             :enable-time="enableTime"
             :time-format="timeFormat"
@@ -78,6 +80,14 @@
     },
     maxDate: {
       type: [Date, String],
+      default: null,
+    },
+    minYear: {
+      type: Number,
+      default: null,
+    },
+    maxYear: {
+      type: Number,
       default: null,
     },
     enableTime: {

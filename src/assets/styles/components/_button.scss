@@ -1,7 +1,7 @@
 @use '../abstracts' as *;
 
 .btn {
-  @include customFlex(inline-flex, center, center, 8px);
+  @include flex(inline-flex, center, center, 8px);
   border: 0;
   border-radius: $radius-12;
   cursor: pointer;

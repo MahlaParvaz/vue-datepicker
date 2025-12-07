@@ -87,11 +87,11 @@
 
 <style scoped lang="scss">
   .datepicker-content {
-    @include customFlex(column, space-between, normal, 20px);
+    @include flex(column, space-between, normal, 20px);
     margin-bottom: 20px;
 
     &__controls {
-      @include customFlex(row, space-between, center, 8px);
+      @include flex(row, space-between, center, 8px);
       &-btn {
         height: 24px;
         padding: 0;

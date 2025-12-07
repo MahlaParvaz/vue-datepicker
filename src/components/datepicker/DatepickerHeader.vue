@@ -193,7 +193,7 @@
 <style lang="scss" scoped>
   .datepicker {
     &__header {
-      @include customFlex(row, start, center);
+      @include flex(row, start, center);
       font-weight: 400;
       font-size: 12px;
       width: 100%;
@@ -207,7 +207,7 @@
     }
 
     &__controls {
-      @include customFlex(row, space-between, center, 8px);
+      @include flex(row, space-between, center, 8px);
       margin-bottom: 20px;
       &-btn {
         height: 24px;
@@ -219,18 +219,31 @@
 
   .datepicker-content {
     direction: rtl;
-    &__months,
-    &__years {
-      direction: ltr;
+    &__months {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       row-gap: 12px;
       column-gap: 29px;
       width: 100%;
+      &-btn--active {
+        background-color: $primary-500;
+        color: $white-100;
+      }
+    }
+
+    &__months {
+      max-height: none;
+      overflow: visible;
+    }
+
+    &__years {
+      direction: ltr;
       max-height: 240px;
       overflow-y: auto;
       overflow-x: hidden;
       padding-right: 12px;
+      @include flex(row, space-between, center, 12px, wrap);
+
       &::-webkit-scrollbar {
         width: 2px;
       }
@@ -246,7 +259,6 @@
         height: 48px;
         width: 4px;
       }
-
       &-btn--active {
         background-color: $primary-500;
         color: $white-100;
@@ -254,7 +266,7 @@
     }
 
     &__years-controls {
-      @include customFlex(row, space-between, center);
+      @include flex(row, space-between, center);
       height: 24px;
       cursor: pointer;
       margin-bottom: 20px;

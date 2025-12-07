@@ -4,16 +4,25 @@ import { VIEW_MODES, CALENDAR_CONFIG } from '../../constants/datepicker.js';
 import { useI18nStore } from '@/store/i18n.js';
 import { getCalendarAdapter } from '@/locales/adapters/createCalendarAdapterManager.js';
 
-
-export function useNavigation(initialDate = null) {
+export function useNavigation(initialDate = null, options = {}) {
   const i18nStore = useI18nStore();
+  const { minYear = null, maxYear = null } = options;
 
   const adapter = computed(() => getCalendarAdapter(i18nStore.calendarType));
 
   const parsed = parseJalaaliDate(initialDate);
   const today = adapter.value.getToday();
 
-  const currentYear = ref(parsed?.jy || parsed?.year || today.jy || today.year);
+  let initialYear = parsed?.jy || parsed?.year || today.jy || today.year;
+
+  if (minYear !== null && initialYear < minYear) {
+    initialYear = minYear;
+  }
+  if (maxYear !== null && initialYear > maxYear) {
+    initialYear = maxYear;
+  }
+
+  const currentYear = ref(initialYear);
   const currentMonth = ref(parsed?.jm || parsed?.month || today.jm || today.month);
   const currentView = ref(VIEW_MODES.DAYS);
 
@@ -28,11 +37,32 @@ export function useNavigation(initialDate = null) {
 
   const yearRange = computed(() => {
     const years = [];
+
+    if (minYear !== null && maxYear !== null) {
+      for (let year = minYear; year <= maxYear; year++) {
+        years.push(year);
+      }
+      return years;
+    }
+
     const offset = CALENDAR_CONFIG.YEAR_RANGE_OFFSET;
     const count = CALENDAR_CONFIG.YEARS_TO_SHOW;
 
-    for (let i = 0; i < count; i++) {
-      years.push(currentYear.value - offset + i);
+    let startYear = currentYear.value - offset;
+    let endYear = startYear + count - 1;
+
+    if (minYear !== null && startYear < minYear) {
+      startYear = minYear;
+      endYear = Math.min(startYear + count - 1, maxYear ?? Infinity);
+    }
+
+    if (maxYear !== null && endYear > maxYear) {
+      endYear = maxYear;
+      startYear = Math.max(endYear - count + 1, minYear ?? -Infinity);
+    }
+
+    for (let year = startYear; year <= endYear; year++) {
+      years.push(year);
     }
 
     return years;
@@ -61,11 +91,17 @@ export function useNavigation(initialDate = null) {
   }
 
   function nextYear() {
-    currentYear.value++;
+    const nextYearValue = currentYear.value + 1;
+    if (maxYear === null || nextYearValue <= maxYear) {
+      currentYear.value = nextYearValue;
+    }
   }
 
   function prevYear() {
-    currentYear.value--;
+    const prevYearValue = currentYear.value - 1;
+    if (minYear === null || prevYearValue >= minYear) {
+      currentYear.value = prevYearValue;
+    }
   }
 
   function setMonth(month) {
@@ -76,6 +112,10 @@ export function useNavigation(initialDate = null) {
   }
 
   function setYear(year) {
+    // Apply year constraints
+    if (minYear !== null && year < minYear) return;
+    if (maxYear !== null && year > maxYear) return;
+
     currentYear.value = year;
     currentView.value = VIEW_MODES.DAYS;
   }

@@ -65,6 +65,14 @@
       type: [Object, String],
       default: null,
     },
+    minYear: {
+      type: Number,
+      default: null,
+    },
+    maxYear: {
+      type: Number,
+      default: null,
+    },
     enableTime: {
       type: Boolean,
       default: false,
@@ -92,7 +100,10 @@
   const selectedLocale = ref(props.locale || i18nStore.currentLocale);
   const contentRef = ref(null);
   const currentLocale = ref(props.locale || i18nStore.currentLocale);
-  const navigation = useNavigation(props.modelValue);
+  const navigation = useNavigation(props.modelValue, {
+    minYear: props.minYear,
+    maxYear: props.maxYear,
+  });
 
   watch(
     () => props.locale,
@@ -175,6 +186,6 @@
     width: 360px;
     padding: 24px 16px 16px 16px;
     border-radius: $radius-8;
-    @include customFlex(column, space-between, 20px);
+    @include flex(column, space-between, 20px);
   }
 </style>

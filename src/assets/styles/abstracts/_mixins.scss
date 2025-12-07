@@ -1,7 +1,14 @@
-@mixin customFlex($direction: row, $justifyContent: flex-start, $alignItem: normal, $gap: 0) {
+@mixin flex(
+  $direction: row,
+  $justifyContent: flex-start,
+  $alignItem: normal,
+  $gap: 0,
+  $flexWrap: nowrap
+) {
   display: flex;
   flex-direction: $direction;
   justify-content: $justifyContent;
   align-items: $alignItem;
   gap: $gap;
+  flex-wrap: $flexWrap;
 }

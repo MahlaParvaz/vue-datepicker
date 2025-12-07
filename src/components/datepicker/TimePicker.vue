@@ -158,12 +158,12 @@
 
 <style scoped lang="scss">
   .time-picker {
-    @include customFlex(column, start, stretch, 12px);
+    @include flex(column, start, stretch, 12px);
     border-radius: $radius-8;
     padding: 16px;
 
     &__header {
-      @include customFlex(row, center, center);
+      @include flex(row, center, center);
       padding-bottom: 8px;
     }
 
@@ -173,11 +173,11 @@
     }
 
     &__content {
-      @include customFlex(row, space-around, stretch, 8px);
+      @include flex(row, space-around, stretch, 8px);
     }
 
     &__column {
-      @include customFlex(column, start, center, 8px);
+      @include flex(column, start, center, 8px);
       flex: 1;
 
       &--period {
@@ -193,7 +193,7 @@
     }
 
     &__scroll-container {
-      @include customFlex(column, start, stretch, 4px);
+      @include flex(column, start, stretch, 4px);
       max-height: 150px;
       overflow-y: auto;
       width: 100%;
@@ -244,7 +244,7 @@
     }
 
     &__display {
-      @include customFlex(row, center, center);
+      @include flex(row, center, center);
       padding: 12px;
       background-color: $white-100;
       border-radius: $radius-4;

@@ -243,7 +243,7 @@
 </script>
 <style scoped lang="scss">
   .datepicker-content {
-    @include customFlex(column, space-between, normal, 20px);
+    @include flex(column, space-between, normal, 20px);
     margin-bottom: 20px;
     &__weekdays {
       display: grid;
@@ -303,7 +303,7 @@
       width: 100%;
       height: 32px;
       cursor: pointer;
-      @include customFlex(column, start, center);
+      @include flex(column, start, center);
       position: relative;
       font-family: inherit;
 
