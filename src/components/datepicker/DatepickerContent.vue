@@ -1,5 +1,5 @@
 <template>
-  <section class="datepicker-content" :style="{ fontFamily: fontFamily }">
+  <div class="datepicker-content" :style="{ fontFamily: fontFamily }">
     <template v-if="props.currentView === 'days'">
       <div class="datepicker-content__weekdays">
         <span v-for="weekday in WEEKDAYS" :key="weekday" class="datepicker-content__weekday">
@@ -44,7 +44,7 @@
       @select-minute="selectMinute"
       @toggle-period="togglePeriod"
     />
-  </section>
+  </div>
 </template>
 
 <script setup>

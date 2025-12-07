@@ -190,16 +190,20 @@
     emit('select-year', year);
   }
 
-  function nextYearRange() {
+  async function nextYearRange() {
     for (let i = 0; i < CALENDAR_CONFIG.YEARS_TO_SHOW; i++) {
       props.navigation.nextYear();
     }
+    await nextTick();
+    scrollToCurrentYear();
   }
 
-  function prevYearRange() {
+  async function prevYearRange() {
     for (let i = 0; i < CALENDAR_CONFIG.YEARS_TO_SHOW; i++) {
       props.navigation.prevYear();
     }
+    await nextTick();
+    scrollToCurrentYear();
   }
 
   function setYearRef(el, year) {
@@ -264,7 +268,7 @@
 
     &__years {
       direction: ltr;
-      max-height: 240px;
+      max-height: 256px;
       overflow-y: auto;
       overflow-x: hidden;
       padding-right: 12px;

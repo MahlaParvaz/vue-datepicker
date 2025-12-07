@@ -20,10 +20,10 @@
 
 <template>
   <button :type="props.type" :class="buttonClass" :disabled="props.disabled">
-    <span class="button__icon button__icon--start"><slot name="icon-left" /></span>
+    <span class="button__icon button__icon--left"><slot name="icon-left" /></span>
     <span class="button__label"
       ><slot>{{ label }}</slot></span
     >
-    <span class="button__icon button__icon--end"><slot name="icon-right" /></span>
+    <span class="button__icon button__icon--right"><slot name="icon-right" /></span>
   </button>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <section class="datepicker">
+  <div class="datepicker">
     <DatepickerHeader
       :current-view="navigation.currentView.value"
       :current-month="navigation.currentMonth.value"
@@ -33,7 +33,7 @@
     <BaseButton variant="primary" type="submit" size="medium" block @click="handleConfirm">
       {{ confirmButtonText }}
     </BaseButton>
-  </section>
+  </div>
 </template>
 
 <script setup>
