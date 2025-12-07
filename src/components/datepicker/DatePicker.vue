@@ -126,17 +126,10 @@
     emit('update:locale', newLocale);
   }
 
-  function dateSelect(date) {
-    emit('change', date);
-  }
-
-  function rangeSelect(range) {
-    emit('change', range);
-  }
-
-  function multipleSelect(dates) {
-    emit('change', dates);
-  }
+  const dateSelect = (date) => emit('change', date);
+  const rangeSelect = (range) => emit('change', range);
+  const multipleSelect = (dates) => emit('change', dates);
+  const handleClose = () => emit('close');
 
   function handleConfirm() {
     if (datepickerContentRef.value) {
@@ -148,28 +141,15 @@
     }
   }
 
-  function handleClose() {
-    emit('close');
-  }
-
   function handleLocaleUpdate(newLocale) {
     selectedLocale.value = newLocale;
     currentLocale.value = newLocale;
     i18nStore.setLocale(newLocale);
     emit('update:locale', newLocale);
   }
-
-  function toggleView(view) {
-    navigation.toggleView(view);
-  }
-
-  function selectMonth(month) {
-    navigation.setMonth(month);
-  }
-
-  function selectYear(year) {
-    navigation.setYear(year);
-  }
+  const toggleView = (view) => navigation.toggleView(view);
+  const selectMonth = (month) => navigation.setMonth(month);
+  const selectYear = (year) => navigation.setYear(year);
 
   onMounted(() => {
     emit('open');
