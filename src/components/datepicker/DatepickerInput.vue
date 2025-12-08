@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch } from 'vue';
+  import { ref, computed } from 'vue';
   import DatePicker from './DatePicker.vue';
   import CalendarIcon from '../icons/CalendarIcon.vue';
   import BaseInput from '../base/BaseInput.vue';
@@ -116,8 +116,8 @@
 
   const i18nStore = useI18nStore();
   const isOpen = ref(false);
-  const internalValue = ref(props.modelValue);
   const inputRef = ref(null);
+
   const currentLocale = computed(() => props.locale || i18nStore.currentLocale);
   const computedPlaceholder = computed(
     () => props.placeholder || i18nStore.getText('selectDateText'),
@@ -133,57 +133,45 @@
     return fontMap[i18nStore.calendarType] || 'Arial, sans-serif';
   });
 
-  function formatSingleDate(date) {
-    if (!date) return '';
-    const { jy, jm, jd, hour, minute } = date;
-    let formatted = props.format;
-
-    const numberSystem = i18nStore.numberSystem;
-
-    formatted = formatted.replace('YYYY', jy);
-    formatted = formatted.replace('MM', String(jm).padStart(2, '0'));
-    formatted = formatted.replace('DD', String(jd).padStart(2, '0'));
-
-    let result = toLocalizedNumbers(formatted, numberSystem);
-
-    if (props.enableTime && hour !== undefined && minute !== undefined) {
-      const hourStr = String(hour).padStart(2, '0');
-      const minuteStr = String(minute).padStart(2, '0');
-      result += ` ${toLocalizedNumbers(hourStr, numberSystem)}:${toLocalizedNumbers(minuteStr, numberSystem)}`;
-    }
-
-    return result;
-  }
-
   const formattedDate = computed(() => {
     if (!internalValue.value) return '';
 
+    const formatSingle = (date) => {
+      const { jy, jm, jd, hour, minute } = date;
+      const numberSystem = i18nStore.numberSystem;
+
+      let str = props.format
+        .replace('YYYY', jy)
+        .replace('MM', String(jm).padStart(2, '0'))
+        .replace('DD', String(jd).padStart(2, '0'));
+      str = toLocalizedNumbers(str, numberSystem);
+
+      if (props.enableTime && hour != null && minute != null) {
+        const h = toLocalizedNumbers(String(hour).padStart(2, '0'), numberSystem);
+        const m = toLocalizedNumbers(String(minute).padStart(2, '0'), numberSystem);
+        str += ` ${h}:${m}`;
+      }
+      return str;
+    };
+
     if (props.mode === 'range') {
-      const { start, end } = internalValue.value;
+      const { start, end } = internalValue.value || {};
       if (!start) return '';
-      const startFormatted = formatSingleDate(start);
-      if (!end) return startFormatted;
-      const endFormatted = formatSingleDate(end);
-      return `${startFormatted} - ${endFormatted}`;
+      return end ? `${formatSingle(start)} - ${formatSingle(end)}` : formatSingle(start);
     }
 
     if (props.mode === 'multiple') {
-      if (!Array.isArray(internalValue.value) || internalValue.value.length === 0) return '';
-      const formattedDates = internalValue.value.map(formatSingleDate);
-      return formattedDates.join('، ');
+      if (!Array.isArray(internalValue.value) || !internalValue.value.length) return '';
+      return internalValue.value.map(formatSingle).join('، ');
     }
 
-    return formatSingleDate(internalValue.value);
+    return formatSingle(internalValue.value);
   });
 
-  function togglePicker() {
+  const togglePicker = () => {
     isOpen.value = !isOpen.value;
-    if (isOpen.value) {
-      emit('open');
-    } else {
-      emit('close');
-    }
-  }
+    emit(isOpen.value ? 'open' : 'close');
+  };
 
   function closePicker() {
     isOpen.value = false;
@@ -200,12 +188,10 @@
   const handleChange = (date) => emit('change', date);
   const handleLocaleChange = (newLocale) => emit('update:locale', newLocale);
 
-  watch(
-    () => props.modelValue,
-    (newValue) => {
-      internalValue.value = newValue;
-    },
-  );
+  const internalValue = computed({
+    get: () => props.modelValue,
+    set: (val) => emit('update:modelValue', val),
+  });
 </script>
 
 <style scoped lang="scss">

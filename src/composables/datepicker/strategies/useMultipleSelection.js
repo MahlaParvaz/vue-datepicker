@@ -16,38 +16,23 @@ export function useMultipleSelection(initialValue = null) {
     }
   }
 
-  function isSelected(date) {
-    return dates.value.some((d) => isSameDate(d, date));
-  }
+  const isSelected = (date) => dates.value.some((d) => isSameDate(d, date));
 
-  function getValue() {
-    return sortDates(dates.value.map((d) => ({ ...d })));
-  }
+  const getValue = () => sortDates(dates.value.map((d) => ({ ...d })));
 
-  function clear() {
+  const remove = (date) => (dates.value = dates.value.filter((d) => !isSameDate(d, date)));
+
+  const clear = () => {
     dates.value = [];
-  }
+  };
 
-  function remove(date) {
-    dates.value = dates.value.filter((d) => !isSameDate(d, date));
-  }
-
-  function isInRange() {
-    return false;
-  }
-
-  function isRangeStart() {
-    return false;
-  }
-
-  function isRangeEnd() {
-    return false;
-  }
+  const isInRange = () => false;
+  const isRangeStart = () => false;
+  const isRangeEnd = () => false;
 
   return {
     dates: readonly(dates),
     count,
-
     select,
     isSelected,
     isInRange,

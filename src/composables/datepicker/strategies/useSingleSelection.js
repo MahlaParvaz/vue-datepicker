@@ -4,33 +4,19 @@ import { ref, readonly } from 'vue';
 export function useSingleSelection(initialValue = null) {
   const selected = ref(parseJalaaliDateTime(initialValue));
 
-  function select(date) {
-    selected.value = { ...date };
-  }
+  const select = (date) => (selected.value = { ...date });
 
-  function isSelected(date) {
-    return isSameDate(selected.value, date);
-  }
+  const isSelected = (date) => isSameDate(selected.value, date);
 
-  function getValue() {
-    return selected.value ? { ...selected.value } : null;
-  }
+  const getValue = () => (selected.value ? { ...selected.value } : null);
 
-  function clear() {
-    selected.value = null;
-  }
+  const clear = () => (selected.value = null);
 
-  function isInRange() {
-    return false;
-  }
+  const isInRange = () => false;
 
-  function isRangeStart() {
-    return false;
-  }
+  const isRangeStart = () => false;
 
-  function isRangeEnd() {
-    return false;
-  }
+  const isRangeEnd = () => false;
 
   return {
     selected: readonly(selected),

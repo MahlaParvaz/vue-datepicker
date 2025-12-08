@@ -2,9 +2,9 @@ import { compareDates, isBetweenExclusive, isSameDate, parseDateRange } from '@/
 import { computed, readonly, ref } from 'vue';
 
 export function useRangeSelection(initialValue = null) {
-  const parsed = parseDateRange(initialValue);
-  const start = ref(parsed?.start || null);
-  const end = ref(parsed?.end || null);
+  const { start: parsedStart, end: parsedEnd } = parseDateRange(initialValue) || {};
+  const start = ref(parsedStart || null);
+  const end = ref(parsedEnd || null);
 
   const selectionState = computed(() => {
     if (!start.value && !end.value) return 'empty';
@@ -12,7 +12,7 @@ export function useRangeSelection(initialValue = null) {
     return 'complete';
   });
 
-  function select(date) {
+  const select = (date) => {
     const dateObj = { ...date };
 
     if (!start.value || (start.value && end.value)) {
@@ -29,33 +29,22 @@ export function useRangeSelection(initialValue = null) {
     } else {
       end.value = dateObj;
     }
-  }
+  };
 
-  function isSelected(date) {
-    return isRangeStart(date) || isRangeEnd(date);
-  }
-  function isInRange(date) {
+  const isSelected = (date) => isRangeStart(date) || isRangeEnd(date);
+
+  const isInRange = (date) => {
     if (!start.value || !end.value) return false;
     return isBetweenExclusive(date, start.value, end.value);
-  }
+  };
+  const isRangeStart = (date) => isSameDate(start.value, date);
 
-  function isRangeStart(date) {
-    return isSameDate(start.value, date);
-  }
+  const isRangeEnd = (date) => isSameDate(end.value, date);
 
-  function isRangeEnd(date) {
-    return isSameDate(end.value, date);
-  }
-
-  function getValue() {
+  const getValue = () => {
     if (!start.value || !end.value) return null;
-
-    return {
-      start: { ...start.value },
-      end: { ...end.value },
-    };
-  }
-
+    return { start: { ...start.value }, end: { ...end.value } };
+  };
   function clear() {
     start.value = null;
     end.value = null;
@@ -64,7 +53,6 @@ export function useRangeSelection(initialValue = null) {
     start: readonly(start),
     end: readonly(end),
     selectionState,
-
     select,
     isSelected,
     isInRange,

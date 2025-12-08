@@ -5,7 +5,7 @@
       :current-month="navigation.currentMonth.value"
       :current-year="navigation.currentYear.value"
       :enable-locale-selector="enableLocaleSelector"
-      :locale="selectedLocale"
+      :locale="currentLocale"
       :navigation="navigation"
       @close="handleClose"
       @toggle-view="toggleView"
@@ -14,6 +14,7 @@
       @select-year="selectYear"
     />
     <DatepickerContent
+      ref="datepickerContentRef"
       :locale="currentLocale"
       :mode="props.mode"
       :initial-value="props.modelValue"
@@ -24,11 +25,10 @@
       :enable-locale-selector="props.enableLocaleSelector"
       :current-view="navigation.currentView.value"
       :navigation="navigation"
-      @update:selected-date="dateSelect"
-      @update:range-selection="rangeSelect"
-      @update:multiple-selection="multipleSelect"
-      @update:locale="localeChange"
-      ref="datepickerContentRef"
+      @update:selected-date="handleChange"
+      @update:range-selection="handleChange"
+      @update:multiple-selection="handleChange"
+      @update:locale="handleLocaleUpdate"
     />
     <BaseButton variant="primary" type="submit" size="medium" block @click="handleConfirm">
       {{ confirmButtonText }}
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+  import { ref, computed } from 'vue';
   import DatepickerContent from '../datepicker/DatepickerContent.vue';
   import DatepickerHeader from '../datepicker/DatepickerHeader.vue';
   import BaseButton from '../base/BaseButton.vue';
@@ -45,46 +45,16 @@
   import { useNavigation } from '@/composables/datepicker/useNavigation.js';
 
   const props = defineProps({
-    modelValue: {
-      type: [Object, String],
-      default: null,
-    },
-    locale: {
-      type: String,
-      default: 'fa',
-    },
-    mode: {
-      type: String,
-      default: 'single',
-    },
-    minDate: {
-      type: [Object, String],
-      default: null,
-    },
-    maxDate: {
-      type: [Object, String],
-      default: null,
-    },
-    yearsBefore: {
-      type: Number,
-      default: 50,
-    },
-    yearsAfter: {
-      type: Number,
-      default: 50,
-    },
-    enableTime: {
-      type: Boolean,
-      default: false,
-    },
-    timeFormat: {
-      type: [String, Number],
-      default: 24,
-    },
-    enableLocaleSelector: {
-      type: Boolean,
-      default: true,
-    },
+    modelValue: [Object, String],
+    locale: { type: String, default: 'fa' },
+    mode: { type: String, default: 'single' },
+    minDate: [Object, String],
+    maxDate: [Object, String],
+    yearsBefore: { type: Number, default: 50 },
+    yearsAfter: { type: Number, default: 50 },
+    enableTime: { type: Boolean, default: false },
+    timeFormat: { type: [String, Number], default: 24 },
+    enableLocaleSelector: { type: Boolean, default: true },
   });
 
   const emit = defineEmits([
@@ -97,67 +67,40 @@
   ]);
 
   const i18nStore = useI18nStore();
-  const selectedLocale = ref(props.locale || i18nStore.currentLocale);
   const datepickerContentRef = ref(null);
-  const currentLocale = ref(props.locale || i18nStore.currentLocale);
+
   const navigation = useNavigation(props.modelValue, {
     yearsBefore: props.yearsBefore,
     yearsAfter: props.yearsAfter,
   });
 
-  watch(
-    () => props.locale,
-    (newLocale) => {
-      if (newLocale && newLocale !== currentLocale.value) {
-        currentLocale.value = newLocale;
-        i18nStore.setLocale(newLocale);
-      }
+  const currentLocale = computed({
+    get: () => props.locale ?? i18nStore.currentLocale,
+    set: (value) => {
+      i18nStore.setLocale(value);
+      emit('update:locale', value);
     },
-  );
-
-  watch(currentLocale, (newLocale) => {
-    i18nStore.setLocale(newLocale);
   });
 
   const confirmButtonText = computed(() => i18nStore.getText('confirmText'));
 
-  function localeChange(newLocale) {
-    currentLocale.value = newLocale;
-    emit('update:locale', newLocale);
-  }
-
-  const dateSelect = (date) => emit('change', date);
-  const rangeSelect = (range) => emit('change', range);
-  const multipleSelect = (dates) => emit('change', dates);
-  const handleClose = () => emit('close');
+  const handleChange = (value) => emit('change', value);
 
   function handleConfirm() {
-    if (datepickerContentRef.value) {
-      const confirmedDate = datepickerContentRef.value.confirmSelection();
-      if (confirmedDate) {
-        emit('update:modelValue', confirmedDate);
-        emit('confirm', confirmedDate);
-      }
-    }
+    const confirmedDate = datepickerContentRef.value?.confirmSelection();
+    if (!confirmedDate) return;
+
+    emit('update:modelValue', confirmedDate);
+    emit('confirm', confirmedDate);
   }
 
-  function handleLocaleUpdate(newLocale) {
-    selectedLocale.value = newLocale;
-    currentLocale.value = newLocale;
-    i18nStore.setLocale(newLocale);
-    emit('update:locale', newLocale);
-  }
+  const handleLocaleUpdate = (newLocale) => (currentLocale.value = newLocale);
+
+  const handleClose = () => emit('close');
+
   const toggleView = (view) => navigation.toggleView(view);
   const selectMonth = (month) => navigation.setMonth(month);
   const selectYear = (year) => navigation.setYear(year);
-
-  onMounted(() => {
-    emit('open');
-  });
-
-  onUnmounted(() => {
-    emit('close');
-  });
 </script>
 
 <style scoped lang="scss">

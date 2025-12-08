@@ -53,17 +53,11 @@
   const localeSelectorRef = ref(null);
 
   const currentLocalName = computed(() => {
-    if (props.availableLocales.length === 0) {
-      return 'شمسی';
-    }
-
     const locale = props.availableLocales.find((locale) => locale.code === props.modelValue);
-    return locale?.name || props.modelValue;
+    return locale?.name || 'شمسی';
   });
 
-  function toggleDropdown() {
-    isOpen.value = !isOpen.value;
-  }
+  const toggleDropdown = () => (isOpen.value = !isOpen.value);
 
   function selectLocale(localeCode) {
     emit('update:modelValue', localeCode);
@@ -79,7 +73,6 @@
   onMounted(() => {
     document.addEventListener('click', handleClickOutside);
   });
-
   onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
   });

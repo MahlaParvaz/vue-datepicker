@@ -13,7 +13,7 @@
             :key="minute"
             :class="[
               'time-picker__item',
-              { 'time-picker__item--selected': selectedMinute === minute },
+              { 'time-picker__item--selected': onSelectMinute === minute },
             ]"
             @click="onSelectMinute(minute)"
           >
@@ -115,26 +115,13 @@
 
   const emit = defineEmits(['select-hour', 'select-minute', 'toggle-period']);
 
-  function onSelectHour(hour) {
-    emit('select-hour', hour);
-  }
+  const onSelectHour = (hour) => emit('select-hour', hour);
+  const onSelectMinute = (minute) => emit('select-minute', minute);
 
-  function onSelectMinute(minute) {
-    emit('select-minute', minute);
-  }
+  const onTogglePeriod = (period) => period !== props.selectedPeriod && emit('toggle-period');
 
-  function onTogglePeriod(period) {
-    if (period !== props.selectedPeriod) {
-      emit('toggle-period');
-    }
-  }
-
-  function isHourSelected(hour) {
-    if (props.timeFormat === '12') {
-      return props.displayHour === hour;
-    }
-    return props.selectedHour === hour;
-  }
+  const isHourSelected = (hour) =>
+    props.timeFormat === '12' ? props.displayHour === hour : props.selectedHour === hour;
 
   const displayTime = computed(() => {
     if (props.selectedHour === null || props.selectedMinute === null) {
