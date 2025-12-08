@@ -178,8 +178,10 @@
     emit('close');
   }
 
+  const internalState = ref(props.modelValue);
+
   function handleConfirm(date) {
-    internalValue.value = date;
+    internalState.value = date;
     emit('update:modelValue', date);
     emit('confirm', date);
     closePicker();
@@ -189,8 +191,11 @@
   const handleLocaleChange = (newLocale) => emit('update:locale', newLocale);
 
   const internalValue = computed({
-    get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val),
+    get: () => props.modelValue ?? internalState.value,
+    set: (val) => {
+      internalState.value = val;
+      emit('update:modelValue', val);
+    },
   });
 </script>
 

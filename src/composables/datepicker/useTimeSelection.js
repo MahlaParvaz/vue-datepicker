@@ -112,14 +112,11 @@ export function useTimeSelection(options = {}) {
     hour,
     minute,
     period,
-
     displayHour,
     hours,
     minutes,
     isValid,
-
     timeFormat,
-
     selectHour,
     selectMinute,
     togglePeriod,
