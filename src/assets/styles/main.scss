@@ -1,6 +1,3 @@
-@use './abstracts';
+@forward './abstracts';
 
-@use './base/reset';
-@use './base/fonts';
-@use './base/typography';
-
+@forward './base';

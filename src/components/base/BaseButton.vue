@@ -28,7 +28,7 @@
   </button>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
   .button {
     @include flex(inline-flex, center, center, 8px);
     border: 0;

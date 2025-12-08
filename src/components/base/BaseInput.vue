@@ -13,30 +13,12 @@
   const emit = defineEmits(['update:modelValue', 'click', 'focus', 'blur', 'keydown', 'keyup']);
 
   const inputClass = computed(() => ['input', `input--${props.size}`]);
-
-  function handleInput(event) {
-    emit('update:modelValue', event.target.value);
-  }
-
-  function handleClick(event) {
-    emit('click', event);
-  }
-
-  function handleFocus(event) {
-    emit('focus', event);
-  }
-
-  function handleBlur(event) {
-    emit('blur', event);
-  }
-
-  function handleKeydown(event) {
-    emit('keydown', event);
-  }
-
-  function handleKeyup(event) {
-    emit('keyup', event);
-  }
+  const handleInput = (event) => emit('update:modelValue', event.target.value);
+  const handleClick = (event) => emit('click', event);
+  const handleFocus = (event) => emit('focus', event);
+  const handleBlur = (event) => emit('blur', event);
+  const handleKeydown = (event) => emit('keydown', event);
+  const handleKeyup = (event) => emit('keyup', event);
 </script>
 
 <template>
