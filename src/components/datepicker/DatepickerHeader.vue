@@ -242,7 +242,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       row-gap: var(--datepicker-spacing-12);
-      column-gap: 29px;
+      column-gap: var(--datepicker-spacing-24);
       width: 100%;
       &-btn--active {
         @include button-active;

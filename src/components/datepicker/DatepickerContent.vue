@@ -245,7 +245,6 @@
       height: var(--datepicker-weekday-height);
       width: 100%;
       border-radius: var(--datepicker-radius-4);
-      padding-left: 2px;
     }
 
     &__weekday {

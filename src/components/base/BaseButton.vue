@@ -30,14 +30,14 @@
 
 <style lang="scss">
   .button {
-    @include flex(inline-flex, center, center, 8px);
+    @include flex(inline-flex, center, center, var(--datepicker-spacing-8));
     border: 0;
-    border-radius: $radius-12;
+    border-radius: var(--datepicker-radius-12);
     cursor: pointer;
     font-family: inherit;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 8px 16px;
+    font-size: var(--datepicker-font-size-16);
+    font-weight: var(--datepicker-font-weight-semibold);
+    padding: var(--datepicker-spacing-8) var(--datepicker-spacing-16);
 
     &--block {
       width: 100%;
@@ -45,11 +45,11 @@
     }
 
     &--primary {
-      background-color: $primary-600;
-      color: $white-100;
+      background-color: var(--datepicker-primary-600);
+      color: var(--datepicker-white);
     }
     &--secondary {
-      border: 1px solid $gray-200;
+      border: 1px solid var(--datepicker-gray-200);
       height: 55px;
       width: 90px;
     }
@@ -59,19 +59,19 @@
     }
 
     &--small {
-      padding: 8px 14px;
-      font-size: 12px;
-      font-weight: 400;
+      padding: var(--datepicker-spacing-8) 14px;
+      font-size: var(--datepicker-font-size-12);
+      font-weight: var(--datepicker-font-weight-normal);
     }
 
     &--medium {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: var(--datepicker-font-size-16);
+      font-weight: var(--datepicker-font-weight-semibold);
     }
 
     &--large {
-      padding: 14px 24px;
-      font-size: 16px;
+      padding: 14px var(--datepicker-spacing-24);
+      font-size: var(--datepicker-font-size-16);
     }
   }
 </style>

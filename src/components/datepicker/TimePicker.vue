@@ -145,26 +145,26 @@
 
 <style scoped lang="scss">
   .time-picker {
-    @include flex(column, start, stretch, 12px);
-    border-radius: $radius-8;
-    padding: 16px;
+    @include flex(column, start, stretch, var(--datepicker-spacing-12));
+    border-radius: var(--datepicker-radius-8);
+    padding: var(--datepicker-spacing-16);
 
     &__header {
       @include flex(row, center, center);
-      padding-bottom: 8px;
+      padding-bottom: var(--datepicker-spacing-8);
     }
 
     &__title {
-      font-size: 14px;
-      font-weight: 500;
+      font-size: var(--datepicker-font-size-14);
+      font-weight: var(--datepicker-font-weight-medium);
     }
 
     &__content {
-      @include flex(row, space-around, stretch, 8px);
+      @include flex(row, space-around, stretch, var(--datepicker-spacing-8));
     }
 
     &__column {
-      @include flex(column, start, center, 8px);
+      @include flex(column, start, center, var(--datepicker-spacing-8));
       flex: 1;
 
       &--period {
@@ -173,77 +173,77 @@
     }
 
     &__label {
-      font-size: 12px;
-      font-weight: 500;
+      font-size: var(--datepicker-font-size-12);
+      font-weight: var(--datepicker-font-weight-medium);
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: var(--datepicker-spacing-4);
     }
 
     &__scroll-container {
-      @include flex(column, start, stretch, 4px);
+      @include flex(column, start, stretch, var(--datepicker-spacing-4));
       max-height: 150px;
       overflow-y: auto;
       width: 100%;
-      padding: 4px;
-      background-color: $white-100;
-      border-radius: $radius-4;
+      padding: var(--datepicker-spacing-4);
+      background-color: var(--datepicker-white);
+      border-radius: var(--datepicker-radius-4);
 
       &::-webkit-scrollbar {
-        width: 4px;
+        width: var(--datepicker-spacing-4);
       }
 
       &::-webkit-scrollbar-track {
-        border-radius: 2px;
+        border-radius: var(--datepicker-radius-4);
       }
 
       &::-webkit-scrollbar-thumb {
-        border-radius: 2px;
+        border-radius: var(--datepicker-radius-4);
 
         &:hover {
-          background: $gray-100;
+          background: var(--datepicker-gray-100);
         }
       }
     }
 
     &__item {
-      padding: 8px 12px;
+      padding: var(--datepicker-spacing-8) var(--datepicker-spacing-12);
       text-align: center;
-      font-size: 14px;
-      font-weight: 400;
-      border-radius: $radius-4;
+      font-size: var(--datepicker-font-size-14);
+      font-weight: var(--datepicker-font-weight-normal);
+      border-radius: var(--datepicker-radius-4);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--datepicker-transition-duration) var(--datepicker-transition-timing);
       user-select: none;
 
       &:hover {
-        background-color: $gray-100;
+        background-color: var(--datepicker-gray-100);
       }
 
       &--selected {
-        background-color: $primary-500;
-        color: $white-100;
-        font-weight: 500;
+        background-color: var(--datepicker-primary-500);
+        color: var(--datepicker-white);
+        font-weight: var(--datepicker-font-weight-medium);
 
         &:hover {
-          background-color: $primary-600;
+          background-color: var(--datepicker-primary-600);
         }
       }
     }
 
     &__display {
       @include flex(row, center, center);
-      padding: 12px;
-      background-color: $white-100;
-      border-radius: $radius-4;
+      padding: var(--datepicker-spacing-12);
+      background-color: var(--datepicker-white);
+      border-radius: var(--datepicker-radius-4);
     }
 
     &__display-text {
-      font-size: 14px;
+      font-size: var(--datepicker-font-size-14);
 
       strong {
-        color: $primary-600;
-        font-weight: 600;
-        margin-right: 4px;
+        color: var(--datepicker-primary-600);
+        font-weight: var(--datepicker-font-weight-semibold);
+        margin-right: var(--datepicker-spacing-4);
       }
     }
   }

@@ -79,39 +79,20 @@
 </script>
 
 <style scoped lang="scss">
-  .datepicker-content {
-    @include flex(column, space-between, normal, 20px);
-    margin-bottom: 20px;
-
-    &__controls {
-      @include flex(row, space-between, center, 8px);
-      &-btn {
-        height: 24px;
-        padding: 0;
-        border: none;
-      }
-    }
-  }
   .locale-selector {
     position: relative;
     padding: 0;
-    height: 24px;
-
-    &__trigger {
-      height: 24px;
-      width: 500px;
-      padding: 0;
-    }
+    height: var(--datepicker-button-height);
 
     &__icon-open {
       transform: rotate(180deg);
-      transition: transform 0.2s ease;
+      transition: transform var(--datepicker-transition-duration) var(--datepicker-transition-timing);
     }
 
     &__dropdown {
       position: absolute;
-      background-color: $gray-200;
-      border-radius: $radius-4;
+      background-color: var(--datepicker-gray-200);
+      border-radius: var(--datepicker-radius-4);
       max-width: 100px;
       z-index: 1000;
       overflow: hidden;
@@ -119,19 +100,19 @@
 
     &__option {
       width: 100%;
-      padding: $padding-8;
+      padding: var(--datepicker-spacing-8);
       text-align: right;
       cursor: pointer;
-      font-size: 12px;
-      font-weight: 400;
-      transition: background-color 0.2s ease;
+      font-size: var(--datepicker-font-size-12);
+      font-weight: var(--datepicker-font-weight-normal);
+      transition: background-color var(--datepicker-transition-duration) var(--datepicker-transition-timing);
       font-family: inherit;
     }
   }
 
   .dropdown-enter-active,
   .dropdown-leave-active {
-    transition: all 0.2s ease;
+    transition: all var(--datepicker-transition-duration) var(--datepicker-transition-timing);
   }
 
   .dropdown-enter-from,

@@ -188,13 +188,13 @@
       &-content {
         position: relative;
         z-index: 1001;
-        animation: slideUp 0.3s ease;
+        animation: slideUp var(--datepicker-transition-duration) var(--datepicker-transition-timing);
       }
     }
 
     &-fade-enter-active,
     &-fade-leave-active {
-      transition: opacity 0.2s ease;
+      transition: opacity var(--datepicker-transition-duration) var(--datepicker-transition-timing);
     }
 
     &-fade-enter-from,
@@ -204,7 +204,7 @@
 
     @keyframes slideUp {
       from {
-        transform: translateY(20px);
+        transform: translateY(var(--datepicker-spacing-20));
         opacity: 0;
       }
       to {
