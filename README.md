@@ -38,6 +38,7 @@ import DatepickerHeadless from '@mahlaparvaz/vue-datepicker';
 ## ✨ Features
 
 - 🎨 **Headless Architecture**: Full UI control via scoped slots - build your own trigger element
+- 🎨 **Advanced Theming**: Dual theming system - global CSS variables OR per-instance theme prop with dark mode support
 - 🔤 **Custom Font Support**: Built-in font configuration for any locale via `fontConfig` prop
 - 🪶 **Ultra Lightweight**: Only **24KB gzipped** - one of the smallest Vue datepickers!
 - 🌍 **Multi-Calendar Support**: Jalali (Persian), Gregorian, Hijri, and Chinese calendars
@@ -47,7 +48,6 @@ import DatepickerHeadless from '@mahlaparvaz/vue-datepicker';
 - 🎯 **Zero Configuration**: Works out of the box without v-model (optional internal state management)
 - 💅 **Auto-Styled**: CSS automatically injected - no manual style imports needed!
 - 📤 **Multiple Output Formats**: Object, timestamp, Unix, ISO string, custom string, or custom formatter function
-- 🎨 **Fully Customizable**: CSS variables and SCSS mixins for complete style control
 - 📱 **Responsive**: Works seamlessly on desktop and mobile devices
 - ♿ **Accessible**: Keyboard navigation and ARIA labels
 - ⚡ **Tree-shakeable**: Optimized bundle with tree-shaking support
@@ -216,6 +216,108 @@ If no `fontConfig` is provided, the datepicker uses these fallback fonts:
 - **Chinese**: `Microsoft YaHei, SimHei, sans-serif`
 
 **For a complete font configuration guide**, see [FONTS.md](./FONTS.md)
+
+## 🎨 Theming & Customization
+
+The datepicker provides two powerful ways to customize its appearance:
+
+### Option 1: Global CSS Variables (Recommended for App-Wide Styling)
+
+Override CSS variables in your global styles to customize all datepicker instances:
+
+```css
+/* In your global CSS file (e.g., app.css) */
+:root {
+  /* Colors */
+  --datepicker-primary-500: #e91e63;
+  --datepicker-primary-600: #c2185b;
+
+  /* Dimensions */
+  --datepicker-width: 400px;
+  --datepicker-day-size: 40px;
+
+  /* Border Radius */
+  --datepicker-radius-8: 12px;
+  --datepicker-radius-10: 16px;
+
+  /* Spacing */
+  --datepicker-spacing-16: 20px;
+}
+```
+
+### Option 2: Theme Prop (For Per-Instance Styling)
+
+Pass a `theme` object to specific datepicker instances:
+
+```vue
+<script setup>
+import { ref } from 'vue';
+import DatepickerHeadless from '@mahlaparvaz/vue-datepicker';
+
+const customTheme = ref({
+  colors: {
+    primary: '#e91e63',
+    primaryLight: '#f06292',
+    primaryDark: '#c2185b'
+  },
+  dimensions: {
+    width: '400px',
+    daySize: '40px'
+  },
+  radius: {
+    medium: '12px',
+    large: '16px'
+  }
+});
+</script>
+
+<template>
+  <DatepickerHeadless :theme="customTheme">
+    <template #default="{ open, formattedDate }">
+      <button @click="open">{{ formattedDate || 'Select Date' }}</button>
+    </template>
+  </DatepickerHeadless>
+</template>
+```
+
+### Dark Mode Example
+
+```vue
+<script setup>
+import { ref, computed } from 'vue';
+
+const isDarkMode = ref(false);
+
+const darkTheme = {
+  colors: {
+    primary: '#84b3fe',
+    grayLighter: '#1e1e1e',
+    grayLight: '#2a2a2a',
+    textPrimary: '#ffffff'
+  }
+};
+
+const lightTheme = {
+  colors: {
+    primary: '#2f7bf5',
+    grayLighter: '#ffffff',
+    textPrimary: '#1a1a1a'
+  }
+};
+
+const currentTheme = computed(() => isDarkMode.value ? darkTheme : lightTheme);
+</script>
+
+<template>
+  <DatepickerHeadless :theme="currentTheme">
+    <template #default="{ open, formattedDate }">
+      <button @click="open">{{ formattedDate }}</button>
+    </template>
+  </DatepickerHeadless>
+</template>
+```
+
+**For complete theming documentation**, see [THEMING.md](./THEMING.md)
 
 ## 📦 Bundle Size
 
@@ -615,6 +717,7 @@ Available constants:
 | `placeholder` | `String` | Auto | Input placeholder text |
 | `format` | `String` | `'YYYY/MM/DD'` | Date display format in the input field |
 | `fontConfig` | `Object` | `null` | Custom font configuration for different calendar types. Example: `{ jalali: 'Vazir', gregorian: 'Roboto', hijri: 'Amiri', chinese: 'Noto Sans SC' }` |
+| `theme` | `Object` | `null` | Custom theme configuration for styling. Example: `{ colors: { primary: '#e91e63' }, dimensions: { width: '400px' } }`. See [THEMING.md](./THEMING.md) |
 | `enableTime` | `Boolean` | `false` | Enable time selection |
 | `timeFormat` | `Number \| String` | `24` | Time format (12 or 24) |
 | `yearsBefore` | `Number` | `50` | Number of years before current year |
@@ -985,14 +1088,50 @@ For a pre-styled option, use `DatepickerInput`.
 
 ### How do I customize the theme?
 
-Override CSS variables in your global styles:
+You have two options:
 
+**Option 1: Global CSS Variables (affects all datepickers)**
 ```css
+/* In your global CSS */
 :root {
-  --datepicker-primary-500: #your-color;
+  --datepicker-primary-500: #e91e63;
+  --datepicker-width: 400px;
   --datepicker-day-size: 40px;
 }
 ```
+
+**Option 2: Theme Prop (per-instance)**
+```vue
+<DatepickerHeadless :theme="{ colors: { primary: '#e91e63' } }">
+  <!-- ... -->
+</DatepickerHeadless>
+```
+
+See [THEMING.md](./THEMING.md) for complete theming documentation.
+
+### Can I create a dark mode theme?
+
+Yes! Use either CSS variables with media queries or the theme prop:
+
+```vue
+<script setup>
+const darkTheme = {
+  colors: {
+    primary: '#84b3fe',
+    grayLighter: '#1e1e1e',
+    textPrimary: '#ffffff'
+  }
+};
+</script>
+
+<template>
+  <DatepickerHeadless :theme="darkTheme">
+    <!-- ... -->
+  </DatepickerHeadless>
+</template>
+```
+
+See [THEMING.md](./THEMING.md) for full dark mode examples.
 
 ### Which calendars are supported?
 

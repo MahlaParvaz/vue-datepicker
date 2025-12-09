@@ -1,40 +1,9 @@
-/*
- * Font Configuration
- * By default, fonts are NOT included in the bundle to keep package size small.
- *
- * Option 1: Users can provide their own fonts via fontConfig prop
- * Option 2: Load fonts via CDN in your app (recommended)
- * Option 3: Uncomment the @font-face rules below to include fonts in bundle (+200KB)
- */
-
-// /* Uncomment if you want to include IRANYekan fonts in bundle:
-
 @font-face {
   font-family: 'IRANYekan';
   src:
     local('IRANYekan Regular'),
-    url('@/assets/fonts/IRANYekanMobileRegular.woff2') format('woff2');
+    url('/fonts/IRANYekanMobileRegular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
-
-// @font-face {
-//   font-family: 'IRANYekan';
-//   src:
-//     local('IRANYekan Medium'),
-//     url('@/assets/fonts/IRANYekanMobileMedium.woff2') format('woff2');
-//   font-weight: 500;
-//   font-style: normal;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: 'IRANYekan';
-//   src:
-//     local('IRANYekan Bold'),
-//     url('@/assets/fonts/IRANYekanMobileBold.woff2') format('woff2');
-//   font-weight: 700;
-//   font-style: normal;
-//   font-display: swap;
-// }

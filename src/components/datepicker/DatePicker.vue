@@ -1,5 +1,5 @@
 <template>
-  <div class="datepicker" :style="{ fontFamily }">
+  <div ref="datepickerRef" class="datepicker" :style="{ fontFamily }">
     <DatepickerHeader
       :current-view="navigation.currentView.value"
       :current-month="navigation.currentMonth.value"
@@ -39,12 +39,13 @@
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, toRef } from 'vue';
   import DatepickerContent from '../datepicker/DatepickerContent.vue';
   import DatepickerHeader from '../datepicker/DatepickerHeader.vue';
   import BaseButton from '../base/BaseButton.vue';
   import { useI18nStore } from '@/store/i18n';
   import { useNavigation } from '@/composables/datepicker/useNavigation.js';
+  import { useTheme } from '@/composables/useTheme.js';
 
   const props = defineProps({
     modelValue: [Object, String],
@@ -61,6 +62,26 @@
       type: Object,
       default: null,
     },
+    theme: {
+      type: Object,
+      default: null,
+      validator: (value) => {
+        if (!value) return true;
+        const validKeys = [
+          'colors',
+          'radius',
+          'spacing',
+          'fontSize',
+          'fontWeight',
+          'dimensions',
+          'grid',
+          'transitions',
+          'range',
+          'scrollbar',
+        ];
+        return Object.keys(value).every((key) => validKeys.includes(key));
+      },
+    },
   });
 
   const emit = defineEmits([
@@ -74,11 +95,14 @@
 
   const i18nStore = useI18nStore();
   const datepickerContentRef = ref(null);
+  const datepickerRef = ref(null);
 
   const navigation = useNavigation(props.modelValue, {
     yearsBefore: props.yearsBefore,
     yearsAfter: props.yearsAfter,
   });
+
+  useTheme(toRef(props, 'theme'), datepickerRef);
 
   const currentLocale = computed({
     get: () => props.locale ?? i18nStore.currentLocale,

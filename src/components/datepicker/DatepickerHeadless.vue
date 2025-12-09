@@ -24,6 +24,7 @@
           :time-format="timeFormat"
           :enable-locale-selector="enableLocaleSelector"
           :font-config="fontConfig"
+          :theme="theme"
           @confirm="handleConfirm"
           @change="handleChange"
           @close="close"
@@ -109,6 +110,26 @@
       validator: (value) => {
         if (!value) return true;
         const validKeys = ['jalali', 'hijri', 'gregorian', 'chinese'];
+        return Object.keys(value).every((key) => validKeys.includes(key));
+      },
+    },
+    theme: {
+      type: Object,
+      default: null,
+      validator: (value) => {
+        if (!value) return true;
+        const validKeys = [
+          'colors',
+          'radius',
+          'spacing',
+          'fontSize',
+          'fontWeight',
+          'dimensions',
+          'grid',
+          'transitions',
+          'range',
+          'scrollbar',
+        ];
         return Object.keys(value).every((key) => validKeys.includes(key));
       },
     },
