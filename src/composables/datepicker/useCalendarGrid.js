@@ -1,110 +1,103 @@
-import { computed, watch, ref } from 'vue';
+import { computed } from 'vue';
 import { isSameDate } from '../../utils/datepicker/dateComparison.js';
 import { CALENDAR_CONFIG } from '../../constants/datepicker.js';
 import { getCalendarAdapter } from '@/locales/adapters/createCalendarAdapterManager.js';
 import { useI18nStore } from '@/store/i18n.js';
 
 export function useCalendarGrid(options) {
-  const { year, month, selection, constraints } = options;
+  const { year, month, selection, constraints, locale } = options;
 
-  const i18nStore = useI18nStore();
-  const adapter = computed(() => getCalendarAdapter(i18nStore.calendarType));
-  const today = ref(adapter.value.getToday());
+  const i18n = useI18nStore();
 
-  if (options.locale) {
-    watch(options.locale, (newVal) => {
-      i18nStore.setLocale(newVal);
-      today.value = adapter.value.getToday();
-    });
+  if (locale) {
+    computed(() => locale.value).value;
+    computed(() => i18n.setLocale(locale.value));
   }
 
-  watch(
-    () => i18nStore.calendarType,
-    () => {
-      today.value = adapter.value.getToday();
-    },
-  );
+  const adapter = computed(() => getCalendarAdapter(i18n.calendarType));
 
-  function createDayObject(day, monthOffset = 0) {
-    let targetMonth = month.value + monthOffset;
-    let targetYear = year.value;
+  const today = computed(() => adapter.value.getToday());
 
-    if (targetMonth < 1) {
-      targetMonth = 12;
-      targetYear--;
-    } else if (targetMonth > 12) {
-      targetMonth = 1;
-      targetYear++;
+  const resolveMonthYear = (offset) => {
+    let y = year.value;
+    let m = month.value + offset;
+
+    if (m < 1) {
+      m = 12;
+      y--;
+    } else if (m > 12) {
+      m = 1;
+      y++;
     }
 
-    const date = {
-      jy: targetYear,
-      jm: targetMonth,
+    return { y, m };
+  };
+
+  const createDayMeta = (day, offset = 0) => {
+    const { y, m } = resolveMonthYear(offset);
+
+    const dateObj = {
+      jy: y,
+      jm: m,
       jd: day,
-      year: targetYear,
-      month: targetMonth,
-      day: day,
+      year: y,
+      month: m,
+      day,
     };
-    const key = monthOffset === 0 ? day : `${monthOffset > 0 ? 'next' : 'prev'}-${day}`;
+
+    const isInCurrentMonth = offset === 0;
 
     return {
-      key,
+      key: isInCurrentMonth ? day : `${offset > 0 ? 'next' : 'prev'}-${day}`,
+      id: `${y}-${m}-${day}`,
       day,
-      date,
-      id: `${targetYear}-${targetMonth}-${day}`,
-
-      isCurrentMonth: monthOffset === 0,
-      isPrevMonth: monthOffset < 0,
-      isNextMonth: monthOffset > 0,
-
-      isToday: isSameDate(date, today.value),
-      isDisabled: constraints?.isDisabled(date) ?? false,
-
-      isSelected: selection.isSelected(date),
-      isInRange: selection.isInRange(date),
-      isRangeStart: selection.isRangeStart(date),
-      isRangeEnd: selection.isRangeEnd(date),
+      date: dateObj,
+      isCurrentMonth: isInCurrentMonth,
+      isPrevMonth: offset < 0,
+      isNextMonth: offset > 0,
+      isToday: isSameDate(dateObj, today.value),
+      isDisabled: constraints?.isDisabled(dateObj) ?? false,
+      isSelected: selection.isSelected(dateObj),
+      isInRange: selection.isInRange(dateObj),
+      isRangeStart: selection.isRangeStart(dateObj),
+      isRangeEnd: selection.isRangeEnd(dateObj),
     };
-  }
+  };
 
-  function getPrevMonthDays() {
+  const prevMonthDays = computed(() => {
     const firstDayWeekday = adapter.value.getWeekday?.(year.value, month.value, 1) ?? 0;
+
     if (firstDayWeekday === 0) return [];
 
-    const prevMonth = month.value === 1 ? 12 : month.value - 1;
-    const prevYear = month.value === 1 ? year.value - 1 : year.value;
-    const prevMonthLength = adapter.value.getDaysInMonth(prevYear, prevMonth);
+    const { y, m } = resolveMonthYear(-1);
+    const totalPrevDays = adapter.value.getDaysInMonth(y, m);
 
-    const days = [];
-    for (let i = firstDayWeekday - 1; i >= 0; i--) {
-      days.push(createDayObject(prevMonthLength - i, -1));
-    }
-
-    return days;
-  }
-
-  function getCurrentMonthDays() {
-    const daysInMonth = adapter.value.getDaysInMonth(year.value, month.value);
-    return Array.from({ length: daysInMonth }, (_, i) => createDayObject(i + 1, 0));
-  }
-
-  function getNextMonthDays(existingCount) {
-    const remaining = CALENDAR_CONFIG.TOTAL_CELLS - existingCount;
-    if (remaining <= 0) return [];
-
-    return Array.from({ length: remaining }, (_, i) => createDayObject(i + 1, 1));
-  }
-
-  const days = computed(() => {
-    const prevDays = getPrevMonthDays();
-    const currentDays = getCurrentMonthDays();
-    const nextDays = getNextMonthDays(prevDays.length + currentDays.length);
-    const allDays = [...prevDays, ...currentDays, ...nextDays];
-    return allDays.slice(0, CALENDAR_CONFIG.TOTAL_CELLS);
+    return Array.from({ length: firstDayWeekday }, (_, i) =>
+      createDayMeta(totalPrevDays - (firstDayWeekday - 1 - i), -1),
+    );
   });
 
-  const weeksCount = computed(() => Math.ceil(days.value.length / CALENDAR_CONFIG.DAYS_IN_WEEK));
+  const currentMonthDays = computed(() => {
+    const total = adapter.value.getDaysInMonth(year.value, month.value);
+    return Array.from({ length: total }, (_, i) => createDayMeta(i + 1));
+  });
 
+  const nextMonthDays = computed(() => {
+    const used = prevMonthDays.value.length + currentMonthDays.value.length;
+    const remaining = CALENDAR_CONFIG.TOTAL_CELLS - used;
+
+    return remaining <= 0
+      ? []
+      : Array.from({ length: remaining }, (_, i) => createDayMeta(i + 1, 1));
+  });
+
+  const days = computed(() => [
+    ...prevMonthDays.value,
+    ...currentMonthDays.value,
+    ...nextMonthDays.value,
+  ]);
+
+  const weeksCount = computed(() => Math.ceil(days.value.length / CALENDAR_CONFIG.DAYS_IN_WEEK));
   const weeks = computed(() => {
     const result = [];
     for (let i = 0; i < days.value.length; i += CALENDAR_CONFIG.DAYS_IN_WEEK) {

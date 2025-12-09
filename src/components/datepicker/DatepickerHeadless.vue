@@ -4,9 +4,10 @@
     :close="close"
     :toggle="toggle"
     :is-open="isOpen"
-    :selected-value="internalValue"
-  >
-  </slot>
+    :value="internalValue"
+    :formatted-date="formattedDate"
+    :font-family="fontFamily"
+  />
 
   <Transition name="datepicker-fade">
     <div v-if="isOpen" class="datepicker__overlay" @click="close">
@@ -23,8 +24,8 @@
           :time-format="timeFormat"
           :enable-locale-selector="enableLocaleSelector"
           @confirm="handleConfirm"
-          @close="close"
           @change="handleChange"
+          @close="close"
           @update:locale="handleLocaleChange"
         />
       </div>
@@ -33,10 +34,11 @@
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue';
+  import { computed } from 'vue';
   import DatePicker from './DatePicker.vue';
   import { useI18nStore } from '@/store/i18n';
-  import { transformOutput } from '@/utils/datepicker/outputFormatter';
+  import { usePickerState } from '@/composables/datepicker/usePickerState';
+  import { useDateFormatting } from '@/composables/datepicker/useDateFormatting';
 
   const props = defineProps({
     modelValue: {
@@ -51,6 +53,10 @@
     locale: {
       type: String,
       default: null,
+    },
+    format: {
+      type: String,
+      default: 'YYYY/MM/DD',
     },
     minDate: {
       type: [Date, String],
@@ -83,10 +89,18 @@
     outputFormat: {
       type: [String, Function],
       default: 'object',
+      validator: (value) => {
+        if (typeof value === 'function') return true;
+        return ['object', 'timestamp', 'unix', 'iso', 'string'].includes(value);
+      },
     },
     outputStringFormat: {
       type: String,
       default: 'YYYY/MM/DD',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   });
 
@@ -100,48 +114,24 @@
   ]);
 
   const i18nStore = useI18nStore();
-  const isOpen = ref(false);
-  const internalState = ref(props.modelValue);
 
   const currentLocale = computed(() => props.locale || i18nStore.currentLocale);
 
-  const open = () => {
-    isOpen.value = true;
-    emit('open');
-  };
+  const {
+    isOpen,
+    internalValue,
+    open,
+    close,
+    toggle,
+    handleConfirm,
+    handleChange,
+    handleLocaleChange,
+  } = usePickerState(props, emit);
 
-  const close = () => {
-    isOpen.value = false;
-    emit('close');
-  };
-
-  const toggle = () => {
-    isOpen.value = !isOpen.value;
-    emit(isOpen.value ? 'open' : 'close');
-  };
-
-  function handleConfirm(date) {
-    internalState.value = date;
-    const transformedDate = transformOutput(date, props.outputFormat, props.outputStringFormat);
-    emit('update:modelValue', transformedDate);
-    emit('confirm', transformedDate);
-    close();
-  }
-
-  const handleChange = (date) => {
-    const transformedDate = transformOutput(date, props.outputFormat, props.outputStringFormat);
-    emit('change', transformedDate);
-  };
-
-  const handleLocaleChange = (newLocale) => emit('update:locale', newLocale);
-
-  const internalValue = computed({
-    get: () => props.modelValue ?? internalState.value,
-    set: (val) => {
-      internalState.value = val;
-      const transformedVal = transformOutput(val, props.outputFormat, props.outputStringFormat);
-      emit('update:modelValue', transformedVal);
-    },
+  const { formattedDate, fontFamily } = useDateFormatting(internalValue, {
+    mode: props.mode,
+    format: props.format,
+    enableTime: props.enableTime,
   });
 
   defineExpose({
