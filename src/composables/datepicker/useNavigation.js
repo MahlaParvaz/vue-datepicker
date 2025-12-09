@@ -4,71 +4,67 @@ import { VIEW_MODES } from '../../constants/datepicker.js';
 import { useI18nStore } from '@/store/i18n.js';
 import { getCalendarAdapter } from '@/locales/adapters/createCalendarAdapterManager.js';
 
+/**
+ * Composable for managing calendar navigation state (year, month, view).
+ *
+ * @param {Date|string|Object|null} initialDate - Initial selected date.
+ * @param {Object} options - Navigation options.
+ * @param {number} [options.yearsBefore=50] - Years allowed before current year.
+ * @param {number} [options.yearsAfter=50] - Years allowed after current year.
+ *
+ * @returns {Object} Navigation state and utility functions.
+ */
 export function useNavigation(initialDate = null, options = {}) {
   const i18nStore = useI18nStore();
   const { yearsBefore = 50, yearsAfter = 50 } = options;
 
   const adapter = computed(() => getCalendarAdapter(i18nStore.calendarType));
+
   const activeMinYear = computed(() => {
     const today = adapter.value.getToday();
-    const currentYear = today.jy || today.year;
+    const currentYear = today.jy ?? today.year;
     return currentYear - yearsBefore;
   });
 
   const activeMaxYear = computed(() => {
     const today = adapter.value.getToday();
-    const currentYear = today.jy || today.year;
+    const currentYear = today.jy ?? today.year;
     return currentYear + yearsAfter;
   });
 
   const parsed = parseJalaaliDate(initialDate);
   const today = adapter.value.getToday();
 
-  let initialYear = parsed?.jy || parsed?.year || today.jy || today.year;
-
-  if (initialYear < activeMinYear.value) {
-    initialYear = activeMinYear.value;
-  }
-  if (initialYear > activeMaxYear.value) {
-    initialYear = activeMaxYear.value;
-  }
+  let initialYear = parsed?.jy ?? parsed?.year ?? today.jy ?? today.year;
+  initialYear = Math.min(Math.max(initialYear, activeMinYear.value), activeMaxYear.value);
 
   const currentYear = ref(initialYear);
-  const currentMonth = ref(parsed?.jm || parsed?.month || today.jm || today.month);
+  const currentMonth = ref(parsed?.jm ?? parsed?.month ?? today.jm ?? today.month);
   const currentView = ref(VIEW_MODES.DAYS);
 
   watch(
     () => i18nStore.calendarType,
     () => {
       const newToday = adapter.value.getToday();
-      let newYear = newToday.jy || newToday.year;
-      if (newYear < activeMinYear.value) {
-        newYear = activeMinYear.value;
-      }
-      if (newYear > activeMaxYear.value) {
-        newYear = activeMaxYear.value;
-      }
+      let newYear = newToday.jy ?? newToday.year;
+      newYear = Math.min(Math.max(newYear, activeMinYear.value), activeMaxYear.value);
 
       currentYear.value = newYear;
-      currentMonth.value = newToday.jm || newToday.month;
+      currentMonth.value = newToday.jm ?? newToday.month;
     },
   );
 
   const yearRange = computed(() => {
     const years = [];
-    const currentMinYear = activeMinYear.value;
-    const currentMaxYear = activeMaxYear.value;
-
-    for (let year = currentMinYear; year <= currentMaxYear; year++) {
-      years.push(year);
+    for (let y = activeMinYear.value; y <= activeMaxYear.value; y++) {
+      years.push(y);
     }
-
     return years;
   });
 
-  const daysInCurrentMonth = computed(() => {
-    return adapter.value.getDaysInMonth(currentYear.value, currentMonth.value);
-  });
+  const daysInCurrentMonth = computed(() =>
+    adapter.value.getDaysInMonth(currentYear.value, currentMonth.value),
+  );
 
   function nextMonth() {
     if (currentMonth.value === 12) {
@@ -90,16 +86,12 @@ export function useNavigation(initialDate = null, options = {}) {
 
   function nextYear() {
     const nextYearValue = currentYear.value + 1;
-    if (nextYearValue <= activeMaxYear.value) {
-      currentYear.value = nextYearValue;
-    }
+    if (nextYearValue <= activeMaxYear.value) currentYear.value = nextYearValue;
   }
 
   function prevYear() {
     const prevYearValue = currentYear.value - 1;
-    if (prevYearValue >= activeMinYear.value) {
-      currentYear.value = prevYearValue;
-    }
+    if (prevYearValue >= activeMinYear.value) currentYear.value = prevYearValue;
   }
 
   function setMonth(month) {
@@ -110,16 +102,14 @@ export function useNavigation(initialDate = null, options = {}) {
   }
 
   function setYear(year) {
-    if (year < activeMinYear.value || year > activeMaxYear.value) return;
-
-    currentYear.value = year;
-    currentView.value = VIEW_MODES.DAYS;
+    if (year >= activeMinYear.value && year <= activeMaxYear.value) {
+      currentYear.value = year;
+      currentView.value = VIEW_MODES.DAYS;
+    }
   }
 
   function setView(view) {
-    if (Object.values(VIEW_MODES).includes(view)) {
-      currentView.value = view;
-    }
+    if (Object.values(VIEW_MODES).includes(view)) currentView.value = view;
   }
 
   function toggleView(view) {
@@ -128,21 +118,20 @@ export function useNavigation(initialDate = null, options = {}) {
 
   function goToDate(date) {
     if ((date?.jy && date?.jm) || (date?.year && date?.month)) {
-      currentYear.value = date.jy || date.year;
-      currentMonth.value = date.jm || date.month;
+      currentYear.value = date.jy ?? date.year;
+      currentMonth.value = date.jm ?? date.month;
       currentView.value = VIEW_MODES.DAYS;
     }
   }
 
   function goToToday() {
-    const newToday = adapter.value.getToday();
-    goToDate(newToday);
+    goToDate(adapter.value.getToday());
   }
 
   function reset() {
-    const initial = parseJalaaliDate(initialDate) || adapter.value.getToday();
-    currentYear.value = initial.jy || initial.year;
-    currentMonth.value = initial.jm || initial.month;
+    const initial = parseJalaaliDate(initialDate) ?? adapter.value.getToday();
+    currentYear.value = initial.jy ?? initial.year;
+    currentMonth.value = initial.jm ?? initial.month;
     currentView.value = VIEW_MODES.DAYS;
   }
 
@@ -150,7 +139,6 @@ export function useNavigation(initialDate = null, options = {}) {
     currentYear,
     currentMonth,
     currentView,
-
     yearRange,
     daysInCurrentMonth,
 
