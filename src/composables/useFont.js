@@ -1,7 +1,6 @@
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useI18nStore } from '@/store/i18n';
 import { fontConfig as globalFontConfig } from '@/plugins/font';
-import { loadDefaultFont } from '@/utils/fontLoader';
 
 const DEFAULT_FONT_MAP = {
   jalali: 'Vazirmatn, Tahoma, sans-serif',
@@ -17,13 +16,6 @@ const DEFAULT_FONT_MAP = {
  */
 export function useFont(customFontConfig = null) {
   const i18nStore = useI18nStore();
-
-  onMounted(() => {
-    const calendarType = i18nStore.calendarType;
-    if (calendarType === 'jalali' || calendarType === 'hijri') {
-      loadDefaultFont();
-    }
-  });
 
   const fontFamily = computed(() => {
     const key = i18nStore.calendarType;
