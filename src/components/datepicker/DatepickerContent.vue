@@ -223,8 +223,6 @@
   });
 </script>
 <style scoped lang="scss">
-  @use '@/assets/styles/abstracts' as *;
-
   .datepicker-content {
     @include flex(column, space-between, normal, space(20));
     margin-bottom: space(20);

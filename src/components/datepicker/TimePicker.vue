@@ -144,8 +144,6 @@
 </script>
 
 <style scoped lang="scss">
-  @use '@/assets/styles/abstracts' as *;
-
   .time-picker {
     @include flex(column, start, stretch, space(12));
     border-radius: radius(8);
@@ -214,8 +212,7 @@
       font-weight: font-weight(normal);
       border-radius: radius(4);
       cursor: pointer;
-      transition: all var(--datepicker-transition-duration)
-        var(--datepicker-transition-timing);
+      transition: transition();
       user-select: none;
 
       &:hover {

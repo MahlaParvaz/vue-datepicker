@@ -1,3 +1,5 @@
+@use './variables' as *;
+
 @mixin flex(
   $direction: row,
   $justifyContent: flex-start,
@@ -91,63 +93,14 @@
   color: var(--datepicker-white);
 }
 
-@mixin generate-css-vars {
-  :root {
-    // Colors
-    @each $group, $map in $dp-colors {
-      @each $key, $val in $map {
-        --datepicker-#{$group}-#{$key}: #{$val};
-      }
-    }
-
-    // Radius
-    @each $key, $val in $dp-radius {
-      --datepicker-radius-#{$key}: #{$val};
-    }
-
-    // Spacing
-    @each $key, $val in $dp-spacing {
-      --datepicker-spacing-#{$key}: #{$val};
-    }
-
-    // Font sizes
-    @each $key, $val in $dp-font-sizes {
-      --datepicker-font-size-#{$key}: #{$val};
-    }
-
-    // Font weights
-    @each $key, $val in $dp-font-weights {
-      --datepicker-font-weight-#{$key}: #{$val};
-    }
-
-    // Dimensions
-    @each $key, $val in $dp-dimensions {
-      --datepicker-#{$key}: #{$val};
-    }
-
-    // Grid
-    @each $key, $val in $dp-grid {
-      --datepicker-grid-#{$key}: #{$val};
-    }
-
-    // Transition
-    @each $key, $val in $dp-transition {
-      --datepicker-transition-#{$key}: #{$val};
-    }
-
-    // Font families
-    @each $key, $val in $dp-fonts {
-      --datepicker-font-#{$key}: #{$val};
-    }
-
-    // Range gradient
-    @each $key, $val in $dp-range-gradient {
-      --datepicker-range-gradient-#{$key}: #{$val};
-    }
-
-    // Scrollbar
-    @each $key, $val in $dp-scrollbar {
-      --datepicker-scrollbar-#{$key}: #{$val};
-    }
-  }
+@mixin animation(
+  $name,
+  $duration: map-get($transition, duration),
+  $timing: map-get($transition, timing),
+  $fill-mode: forwards
+) {
+  animation-name: $name;
+  animation-duration: $duration;
+  animation-timing-function: $timing;
+  animation-fill-mode: $fill-mode;
 }

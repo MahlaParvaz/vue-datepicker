@@ -175,8 +175,6 @@
 </script>
 
 <style scoped lang="scss">
-  @use '@/assets/styles/abstracts' as *;
-
   .datepicker {
     &__overlay {
       @include flex(row, center, center);
@@ -188,13 +186,13 @@
       &-content {
         position: relative;
         z-index: 1001;
-        animation: slideUp var(--datepicker-transition-duration) var(--datepicker-transition-timing);
+        @include animation(slideUp);
       }
     }
 
     &-fade-enter-active,
     &-fade-leave-active {
-      transition: opacity var(--datepicker-transition-duration) var(--datepicker-transition-timing);
+      transition: transition(opacity);
     }
 
     &-fade-enter-from,

@@ -79,8 +79,6 @@
 </script>
 
 <style scoped lang="scss">
-  @use '@/assets/styles/abstracts' as *;
-
   .locale-selector {
     position: relative;
     padding: 0;
@@ -88,8 +86,7 @@
 
     &__icon-open {
       transform: rotate(180deg);
-      transition: transform var(--datepicker-transition-duration)
-        var(--datepicker-transition-timing);
+      transition:  transition(transform);
     }
 
     &__dropdown {
@@ -108,15 +105,14 @@
       cursor: pointer;
       font-size: font-size(12);
       font-weight: font-weight(normal);
-      transition: background-color var(--datepicker-transition-duration)
-        var(--datepicker-transition-timing);
+      transition: transition(background-color);
       font-family: inherit;
     }
   }
 
   .dropdown-enter-active,
   .dropdown-leave-active {
-    transition: all var(--datepicker-transition-duration) var(--datepicker-transition-timing);
+    transition: transition();
   }
 
   .dropdown-enter-from,

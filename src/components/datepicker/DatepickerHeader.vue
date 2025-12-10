@@ -200,8 +200,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @use '@/assets/styles/abstracts' as *;
-
   .datepicker {
     &__header {
       @include flex(row, start, center);

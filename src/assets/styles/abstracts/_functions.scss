@@ -37,3 +37,9 @@
 @function scroll($key) {
   @return map.get($scrollbar, $key);
 }
+
+@function transition($property: all) {
+  $duration: map-get($transition, duration);
+  $timing: map-get($transition, timing);
+  @return '#{$property} #{$duration} #{$timing}';
+}

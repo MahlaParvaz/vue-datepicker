@@ -135,10 +135,7 @@
   const selectYear = (year) => navigation.setYear(year);
 </script>
 
-<style scoped lang="scss">
-  @use '@/assets/styles/abstracts' as *;
-
-  .datepicker {
+<style scoped lang="scss">  .datepicker {
     background-color: get-color(gray, 100);
     width: size(width);
     padding: space(24) space(16) space(16) space(16);
