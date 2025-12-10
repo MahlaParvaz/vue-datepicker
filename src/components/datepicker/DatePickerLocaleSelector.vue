@@ -8,7 +8,9 @@
       class="datepicker-content__controls-btn"
     >
       <template #icon-right>
-        <ArrowDownIcon :width="24" :height="24" :class="{ 'locale-selector__icon-open': isOpen }" />
+        <slot name="dropdown-icon" :size="24" :is-open="isOpen">
+          <ArrowDownIcon :width="24" :height="24" :class="{ 'locale-selector__icon-open': isOpen }" />
+        </slot>
       </template>
       {{ currentLocalName }}
     </BaseButton>

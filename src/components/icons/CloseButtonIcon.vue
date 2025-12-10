@@ -1,41 +1,13 @@
 <script setup>
   defineProps({
-    color: {
-      type: String,
-      default: '#fff',
-    },
-    size: {
-      type: Number,
-      default: 24,
-    },
+    color: { type: String, default: '#292D32' },
+    size: { type: Number, default: 24 },
   });
 </script>
 
 <template>
-  <svg
-    :width="size"
-    :height="size"
-    viewBox="0 0 24 24"
-    :fill="color"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-      stroke="#292D32"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M9.16992 14.83L14.8299 9.17"
-      stroke="#292D32"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M14.8299 14.83L9.16992 9.17"
-      stroke="#292D32"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
+  <svg :width="size" :height="size" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="10" :stroke="color" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M9.17 14.83L14.83 9.17M14.83 14.83L9.17 9.17" :stroke="color" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 </template>

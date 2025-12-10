@@ -1,6 +1,6 @@
 {
   "name": "@mahlaparvaz/vue-datepicker",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "description": "A comprehensive Vue 3 datepicker with Jalali, Gregorian, Hijri, and Chinese calendar support. Features range selection, time picker, and full customization.",
   "author": "Mahla Zohourparvaz <mahla.zph@gmail.com>",
   "license": "MIT",
@@ -38,7 +38,11 @@
     "internationalization",
     "rtl",
     "customizable",
-    "component"
+    "component",
+    "vue-datepicker",
+    "calendar",
+    "vue-calendar",
+    "vue3-datepicker"
   ],
   "repository": {
     "type": "git"
@@ -65,10 +69,11 @@
     "eslint-plugin-vue": "~10.3.0",
     "globals": "^16.3.0",
     "prettier": "3.6.2",
-    "rollup-plugin-visualizer": "^6.0.5",
     "sass": "^1.93.2",
-    "terser": "^5.44.1",
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0"
+  },
+  "dependencies": {
+    "rollup-plugin-visualizer": "^6.0.5"
   }
 }

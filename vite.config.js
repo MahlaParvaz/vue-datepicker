@@ -1,19 +1,21 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { visualizer } from 'rollup-plugin-visualizer';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// CSS به JS تزریق می‌کند
 function cssInjectedByJsPlugin() {
   let cssCode = '';
-
   return {
     name: 'vite-plugin-css-injected-by-js',
     apply: 'build',
     enforce: 'post',
-
     generateBundle(options, bundle) {
       const cssFiles = [];
-
       for (const key in bundle) {
         const chunk = bundle[key];
         if (chunk.type === 'asset' && key.endsWith('.css')) {
@@ -21,13 +23,8 @@ function cssInjectedByJsPlugin() {
           cssCode += chunk.source.toString();
         }
       }
-
-      cssFiles.forEach((file) => delete bundle[file]);
-
-      if (!cssCode) {
-        console.warn('[css-inject] No CSS found to inject');
-        return;
-      }
+      cssFiles.forEach(file => delete bundle[file]);
+      if (!cssCode) return;
 
       const escapedCss = cssCode
         .replace(/\\/g, '\\\\')
@@ -42,21 +39,17 @@ function cssInjectedByJsPlugin() {
 (function(){
   try {
     if (typeof document !== 'undefined') {
-      var existing = document.getElementById('vue-datepicker-style');
-      if (!existing) {
-        var style = document.createElement('style');
+      if (!document.getElementById('vue-datepicker-style')) {
+        const style = document.createElement('style');
         style.id = 'vue-datepicker-style';
         style.textContent = \`${escapedCss}\`;
         document.head.appendChild(style);
       }
     }
-  } catch(e) {
-    console.error('[vue-datepicker] Failed to inject styles:', e);
-  }
+  } catch(e) { console.error('[vue-datepicker] CSS injection failed', e); }
 })();
 `;
           chunk.code = injectCode + chunk.code;
-          console.log('[css-inject] CSS injected into:', key);
         }
       }
     },
@@ -67,12 +60,7 @@ export default defineConfig({
   plugins: [
     vue(),
     cssInjectedByJsPlugin(),
-    visualizer({
-      filename: 'dist/stats.html',
-      open: false,
-      gzipSize: true,
-      brotliSize: true,
-    }),
+    visualizer({ filename: 'dist/stats.html', gzipSize: true, brotliSize: true })
   ],
   resolve: {
     alias: {
@@ -86,7 +74,6 @@ export default defineConfig({
           @use "@/assets/styles/abstracts/variables" as *;
           @use "@/assets/styles/abstracts/functions" as *;
           @use "@/assets/styles/abstracts/mixins" as *;
-          @use "@/assets/styles/abstracts/index" as *;
         `,
       },
     },
@@ -95,27 +82,24 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
       name: 'VueDatepicker',
-      fileName: (format) => `vue-datepicker.${format}.js`,
+      fileName: format => `vue-datepicker.${format}.js`,
     },
+    minify: 'esbuild', // سریع و سبک
+    sourcemap: false,
     cssCodeSplit: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug'],
-      },
-      format: {
-        comments: false,
-      },
-    },
+    assetsInlineLimit: 0, // فونت و تصاویر inline نشوند
     rollupOptions: {
-      external: ['vue'],
+      external: ['vue'], // Vue را external می‌کند
       output: {
         globals: { vue: 'Vue' },
         exports: 'named',
         compact: true,
-        manualChunks: undefined,
+        assetFileNames: assetInfo => {
+          if (assetInfo.name?.endsWith('.woff2')) {
+            return 'fonts/[name][extname]'; // فونت‌ها جدا
+          }
+          return '[name][extname]';
+        },
       },
     },
   },

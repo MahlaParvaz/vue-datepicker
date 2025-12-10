@@ -13,7 +13,23 @@
       @update:locale="handleLocaleUpdate"
       @select-month="selectMonth"
       @select-year="selectYear"
-    />
+    >
+      <template v-if="$slots['close-icon']" #close-icon="slotProps">
+        <slot name="close-icon" v-bind="slotProps" />
+      </template>
+      <template v-if="$slots['dropdown-icon']" #dropdown-icon="slotProps">
+        <slot name="dropdown-icon" v-bind="slotProps" />
+      </template>
+      <template v-if="$slots['locale-dropdown-icon']" #locale-dropdown-icon="slotProps">
+        <slot name="locale-dropdown-icon" v-bind="slotProps" />
+      </template>
+      <template v-if="$slots['arrow-left-icon']" #arrow-left-icon="slotProps">
+        <slot name="arrow-left-icon" v-bind="slotProps" />
+      </template>
+      <template v-if="$slots['arrow-right-icon']" #arrow-right-icon="slotProps">
+        <slot name="arrow-right-icon" v-bind="slotProps" />
+      </template>
+    </DatepickerHeader>
     <DatepickerContent
       ref="datepickerContentRef"
       :locale="currentLocale"
@@ -95,7 +111,7 @@
   ]);
 
   const i18nStore = useI18nStore();
-  const { fontFamily } = useFont();
+  const { fontFamily } = useFont(props.fontConfig);
   const datepickerContentRef = ref(null);
   const datepickerRef = ref(null);
 
@@ -135,7 +151,8 @@
   const selectYear = (year) => navigation.setYear(year);
 </script>
 
-<style scoped lang="scss">  .datepicker {
+<style scoped lang="scss">
+  .datepicker {
     background-color: get-color(gray, 100);
     width: size(width);
     padding: space(24) space(16) space(16) space(16);

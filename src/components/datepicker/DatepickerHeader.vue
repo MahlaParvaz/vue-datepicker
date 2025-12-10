@@ -1,11 +1,13 @@
 <template>
   <div class="datepicker__header" :style="{ fontFamily }">
-    <CloseButtonIcon
-      :width="24"
-      :height="24"
-      class="datepicker__header-close"
-      @click="$emit('close')"
-    />
+    <slot name="close-icon" :on-close="handleClose">
+      <CloseButtonIcon
+        :width="24"
+        :height="24"
+        class="datepicker__header-close"
+        @click="handleClose"
+      />
+    </slot>
     <p>{{ i18nStore.getText('selectDateText') }}</p>
   </div>
 
@@ -14,7 +16,11 @@
       v-if="enableLocaleSelector"
       v-model="selectedLocale"
       :available-locales="availableLocales"
-    />
+    >
+      <template v-if="$slots['locale-dropdown-icon']" #dropdown-icon="slotProps">
+        <slot name="locale-dropdown-icon" v-bind="slotProps" />
+      </template>
+    </DatePickerLocaleSelector>
 
     <BaseButton
       variant="outline"
@@ -24,7 +30,9 @@
       @click="onToggleView('months')"
     >
       <template #icon-right>
-        <ArrowDownIcon :width="24" :height="24" />
+        <slot name="dropdown-icon" :size="24">
+          <ArrowDownIcon :width="24" :height="24" />
+        </slot>
       </template>
       {{ getMonthName(currentMonth) }}
     </BaseButton>
@@ -38,7 +46,9 @@
       :style="{ fontFamily }"
     >
       <template #icon-right>
-        <ArrowDownIcon :width="24" :height="24" />
+        <slot name="dropdown-icon" :size="24">
+          <ArrowDownIcon :width="24" :height="24" />
+        </slot>
       </template>
       {{ formatNumber(currentYear) }}
     </BaseButton>
@@ -46,11 +56,15 @@
 
   <template v-if="props.currentView === 'years'">
     <div class="datepicker-content__years-controls" :style="{ fontFamily }">
-      <ArrowRightIcon :width="24" :height="24" @click="prevYearRange" />
+      <slot name="arrow-right-icon" :size="24" :on-click="prevYearRange">
+        <ArrowRightIcon :width="24" :height="24" @click="prevYearRange" />
+      </slot>
       <p class="datepicker-content__years-controls-year">
         {{ formatNumber(navigation.currentYear.value) }}
       </p>
-      <ArrowLeftIcon :width="24" :height="24" @click="nextYearRange" />
+      <slot name="arrow-left-icon" :size="24" :on-click="nextYearRange">
+        <ArrowLeftIcon :width="24" :height="24" @click="nextYearRange" />
+      </slot>
     </div>
     <div class="datepicker-content__years">
       <BaseButton
@@ -159,6 +173,8 @@
   const getMonthName = (month) => i18nStore.getMonthName(month);
 
   const formatNumber = (value) => toLocalizedNumbers(value, i18nStore.numberSystem);
+
+  const handleClose = () => emit('close');
 
   const onToggleView = (view) => emit('toggle-view', view);
 
