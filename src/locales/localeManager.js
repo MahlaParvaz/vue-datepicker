@@ -1,4 +1,4 @@
-import { LOCALE_DEFINITIONS } from './locales';
+import { LOCALE_DEFINITIONS } from './localesDefinitions';
 
 export function createLocaleManager(initialLocales = {}) {
   const locales = new Map(Object.entries(initialLocales));

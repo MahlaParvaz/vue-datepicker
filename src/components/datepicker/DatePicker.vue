@@ -46,6 +46,7 @@
   import { useI18nStore } from '@/store/i18n';
   import { useNavigation } from '@/composables/datepicker/useNavigation.js';
   import { useTheme } from '@/composables/useTheme.js';
+  import { useFont } from '@/composables/useFont';
 
   const props = defineProps({
     modelValue: [Object, String],
@@ -94,6 +95,7 @@
   ]);
 
   const i18nStore = useI18nStore();
+  const { fontFamily } = useFont();
   const datepickerContentRef = ref(null);
   const datepickerRef = ref(null);
 
@@ -110,18 +112,6 @@
       i18nStore.setLocale(value);
       emit('update:locale', value);
     },
-  });
-
-  const DEFAULT_FONT_MAP = {
-    jalali: 'IRANYekan',
-    hijri: 'IRANYekan',
-    gregorian: 'Arial, sans-serif',
-    chinese: 'Microsoft YaHei, SimHei, sans-serif',
-  };
-
-  const fontFamily = computed(() => {
-    const fonts = { ...DEFAULT_FONT_MAP, ...props.fontConfig };
-    return fonts[i18nStore.calendarType] || 'Arial, sans-serif';
   });
 
   const confirmButtonText = computed(() => i18nStore.getText('confirmText'));

@@ -35,7 +35,7 @@
       size="small"
       class="datepicker__controls-btn"
       @click="onToggleView('years')"
-      :style="{ fontFamily: fontFamily }"
+      :style="{ fontFamily }"
     >
       <template #icon-right>
         <ArrowDownIcon :width="24" :height="24" />
@@ -45,7 +45,7 @@
   </div>
 
   <template v-if="props.currentView === 'years'">
-    <div class="datepicker-content__years-controls" :style="{ fontFamily: fontFamily }">
+    <div class="datepicker-content__years-controls" :style="{ fontFamily }">
       <ArrowRightIcon :width="24" :height="24" @click="prevYearRange" />
       <p class="datepicker-content__years-controls-year">
         {{ formatNumber(navigation.currentYear.value) }}
@@ -59,7 +59,7 @@
         :ref="(el) => setYearRef(el, year)"
         variant="secondary"
         size="small"
-        :style="{ fontFamily: fontFamily }"
+        :style="{ fontFamily }"
         :class="{
           'datepicker-content__years-btn--active': navigation.currentYear.value === year,
         }"
@@ -97,6 +97,7 @@
   import { useI18nStore } from '@/store/i18n';
   import { toLocalizedNumbers } from '@/locales/numberFormatter.js';
   import { CALENDAR_CONFIG } from '@/constants/datepicker.js';
+  import { useFont } from '@/composables/useFont';
 
   const props = defineProps({
     currentView: {
@@ -138,6 +139,7 @@
   ]);
 
   const i18nStore = useI18nStore();
+  const { fontFamily } = useFont();
   const yearButtonRefs = ref({});
 
   const selectedLocale = computed({
@@ -153,18 +155,6 @@
   const months = computed(() =>
     Array.from({ length: CALENDAR_CONFIG.MONTHS_IN_YEAR }, (_, i) => i + 1),
   );
-
-  const DEFAULT_FONT_MAP = {
-    jalali: 'IRANYekan',
-    hijri: 'IRANYekan',
-    gregorian: 'Arial, sans-serif',
-    chinese: 'Microsoft YaHei, SimHei, sans-serif',
-  };
-
-  const fontFamily = computed(() => {
-    const fonts = { ...DEFAULT_FONT_MAP, ...props.fontConfig };
-    return fonts[i18nStore.calendarType] || 'Arial, sans-serif';
-  });
 
   const getMonthName = (month) => i18nStore.getMonthName(month);
 

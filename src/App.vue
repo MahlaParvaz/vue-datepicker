@@ -1,6 +1,7 @@
 <script setup>
   import { ref } from 'vue';
-import DatepickerHeadless from './components/datepicker/DatepickerHeadless.vue';
+  import DatepickerHeadless from './components/datepicker/DatepickerHeadless.vue';
+  import { createDatepickerFontConfig } from './plugins/font';
 
   const simpleDate = ref(null);
   const customFontDate = ref(null);
@@ -9,12 +10,18 @@ import DatepickerHeadless from './components/datepicker/DatepickerHeadless.vue';
     console.log(`${type}:`, value);
   };
 
-  const customFonts = {
-    jalali: 'Vazir, sans-serif',
-    gregorian: 'Roboto, Arial, sans-serif',
-    hijri: 'Amiri, serif',
-    chinese: 'Noto Sans SC, Microsoft YaHei, sans-serif',
-  };
+  // const customFonts = {
+  //   jalali: 'Vazir, sans-serif',
+  //   gregorian: 'Roboto, Arial, sans-serif',
+  //   hijri: 'Amiri, serif',
+  //   chinese: 'Noto Sans SC, Microsoft YaHei, sans-serif',
+  // };
+  createDatepickerFontConfig({
+    jalali: 'IRANYekan',
+    hijri: 'Cairo',
+    gregorian: 'Inter',
+    chinese: 'Noto Sans SC',
+  });
 </script>
 
 <template>

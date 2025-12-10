@@ -1,5 +1,5 @@
 <template>
-  <div class="datepicker-content" :style="{ fontFamily: fontFamily }">
+  <div class="datepicker-content" :style="{ fontFamily }">
     <template v-if="props.currentView === 'days'">
       <div class="datepicker-content__weekdays">
         <span v-for="weekday in weekDays" :key="weekday" class="datepicker-content__weekday">
@@ -59,6 +59,7 @@
   import { toLocalizedNumbers } from '@/locales/numberFormatter.js';
 
   import { useI18nStore } from '@/store/i18n';
+  import { useFont } from '@/composables/useFont';
 
   const props = defineProps({
     locale: { type: String, default: null },
@@ -106,7 +107,7 @@
   const time = props.enableTime
     ? useTimeSelection({ timeFormat: props.timeFormat, initialValue: props.initialValue })
     : null;
-
+  const { fontFamily } = useFont();
   const { weeks: calendarWeeks } = useCalendarGrid({
     year: navigation.currentYear,
     month: navigation.currentMonth,
@@ -116,18 +117,6 @@
   });
 
   const weekDays = computed(() => i18nStore.locale?.weekdays || []);
-
-  const DEFAULT_FONT_MAP = {
-    jalali: 'IRANYekan',
-    hijri: 'IRANYekan',
-    gregorian: 'Arial, sans-serif',
-    chinese: 'Microsoft YaHei, SimHei, sans-serif',
-  };
-
-  const fontFamily = computed(() => {
-    const fonts = { ...DEFAULT_FONT_MAP, ...props.fontConfig };
-    return fonts[i18nStore.calendarType] || 'Arial, sans-serif';
-  });
 
   function getDayClasses(day) {
     return [
