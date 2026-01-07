@@ -134,11 +134,11 @@ export function formatSingleDate(
   if (persianMonthNames && jy != null) monthStr = persianMonthNames[m - 1] ?? monthStr;
 
   let str = format.replace('YYYY', y).replace('MM', monthStr).replace('DD', padZero(d));
-  str = numberSystem === 'fa' ? toPersianNumbers(str) : str;
+  str = numberSystem === 'persian' ? toPersianNumbers(str) : str;
 
   if (includeTime && typeof hour === 'number' && typeof minute === 'number') {
     const timeStr = `${padZero(hour)}:${padZero(minute)}`;
-    str += numberSystem === 'fa' ? ` ${toPersianNumbers(timeStr)}` : ` ${timeStr}`;
+    str += numberSystem === 'persian' ? ` ${toPersianNumbers(timeStr)}` : ` ${timeStr}`;
   }
 
   return str;

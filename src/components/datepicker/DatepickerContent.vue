@@ -107,7 +107,7 @@
   const time = props.enableTime
     ? useTimeSelection({ timeFormat: props.timeFormat, initialValue: props.initialValue })
     : null;
-  const { fontFamily } = useFont();
+  const { fontFamily } = useFont(props.fontConfig);
   const { weeks: calendarWeeks } = useCalendarGrid({
     year: navigation.currentYear,
     month: navigation.currentMonth,

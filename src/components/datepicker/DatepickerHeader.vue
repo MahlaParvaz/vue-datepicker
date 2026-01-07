@@ -153,7 +153,7 @@
   ]);
 
   const i18nStore = useI18nStore();
-  const { fontFamily } = useFont();
+  const { fontFamily } = useFont(props.fontConfig);
   const yearButtonRefs = ref({});
 
   const selectedLocale = computed({
